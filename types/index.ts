@@ -21,7 +21,7 @@ export const SigninFormSchema = z.object({
 });
 
 export const SignupFormSchema = z.object({
-  name : z.string(),
+  name : z.string({message: "Please enter a valid name"}),
   email: EmailSchema,
   password: PasswordSchema,
 });

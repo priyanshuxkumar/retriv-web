@@ -1,5 +1,6 @@
 'use client'
 
+import AxiosInstance from "@/utils/axiosInstance";
 import { CreateAndUpdateApiKeyModal } from "@/components/ApiKeyModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,10 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { timeAgo } from "@/helper/time";
-import AxiosInstance from "@/utils/axiosInstance";
 import { Copy, Eye, Loader } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import NoDataFound from "@/components/NoDataFound";
 
 interface ApiDataProp {
   id: string;
@@ -35,11 +36,10 @@ const useFetchApiKeys = () => {
           },
         });
         if (response.data.success === true) {
-          console.log(response.data)
           setApiKeys(response.data.data);
         }
       } catch (err: unknown) {
-            console.error(err);
+        console.error(err);
       } finally {
         setIsLoading(false);
       }
@@ -78,7 +78,6 @@ export default function Page() {
 
   /** Function for create the API Key */
   const handleCreateApiKey = async (name: string) => {
-    console.log('called')
     try {
         const response = await AxiosInstance.post("/api/v1/apikey",{
           name,
@@ -199,7 +198,8 @@ export default function Page() {
               </TableRow>
             ) : (
               /** Rendering all api-keys */
-              apiKeys.map((item: ApiDataProp) => (
+              (apiKeys.length > 0) &&
+              (apiKeys.map((item: ApiDataProp) => (
                 <TableRow key={item.id} className="text-base hover:bg-transparent cursor-pointer">
                   <TableCell className="font-semibold underline decoration-dashed text-ellipsis pr-8 py-4">
                     <span className="cursor-pointer">{item.name}</span>
@@ -218,19 +218,21 @@ export default function Page() {
                   <TableCell className="text-right py-4">
                   </TableCell>
                 </TableRow>
-              ))
+              )))
             )}
           </TableBody>
         </Table>
+        {/* No API Key found component */}
+        {apiKeys.length < 1 && <NoDataFound />}
       </div>
         { /** Render Modal for create and edit API Key */
-            isModalOpen && 
-                <CreateAndUpdateApiKeyModal
-                    mode={modalMode}
-                    isApiKeyCreateAndUpdateModalOpen={isModalOpen}
-                    setIsApiKeyCreateAndUpdateModalOpen={setIsModalOpen}
-                    onSubmit={handleSubmit}
-                />
+          isModalOpen && 
+              <CreateAndUpdateApiKeyModal
+                  mode={modalMode}
+                  isApiKeyCreateAndUpdateModalOpen={isModalOpen}
+                  setIsApiKeyCreateAndUpdateModalOpen={setIsModalOpen}
+                  onSubmit={handleSubmit}
+              />
         }
     </>
   );

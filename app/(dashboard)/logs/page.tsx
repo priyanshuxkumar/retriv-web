@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import AxiosInstance from "@/utils/axiosInstance";
 import { timeAgo } from "@/helper/time";
+import NoDataFound from "@/components/NoDataFound";
 
 export interface ApiKeyLogProps {
   id: string;
@@ -88,8 +89,12 @@ export default function Page() {
                   </TableCell>
                 </TableRow>
               ) : (
-                logs.map((item: ApiKeyLogProps) => (
-                  <TableRow key={item.id} className="text-base hover:bg-transparent cursor-pointer">
+                (logs.length > 0) &&
+                (logs.map((item: ApiKeyLogProps) => (
+                  <TableRow
+                    key={item.id}
+                    className="text-base hover:bg-transparent cursor-pointer"
+                  >
                     <TableCell className="underline decoration-dashed text-ellipsis pr-8 py-4">
                       <Link href={`/logs/${item.id}`}>{item.endpoint}</Link>
                     </TableCell>
@@ -112,10 +117,12 @@ export default function Page() {
                       {timeAgo(item.createdAt as Date)}
                     </TableCell>
                   </TableRow>
-                ))
+                )))
               )}
             </TableBody>
           </Table>
+          {/* No logs found component  */}
+          {logs.length == 0 && <NoDataFound />}
         </div>
       </div>
     </div>

@@ -1,103 +1,84 @@
-import Image from "next/image";
+import Footer from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { HeroSection } from "@/components/Hero";
+import PriceCard from "@/components/PriceCard";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
+const Faq = [
+  {
+    number: 1,
+    question: "What is Retriv ?",
+    answer: "Retriv is a platform that lets you create an AI agent for your website, allowing it to respond to user queries based on your website’s content.",
+  },
+  {
+    number: 2,
+    question: "How does Retriv work?",
+    answer: "Retriv automatically crawls and indexes your website pages, then uses that content to generate accurate responses to user queries.",
+  },
+  {
+    number: 4,
+    question: "How do I integrate the agent into my website?",
+    answer: "We provide a simple embed code or API to add your agent easily on you website. ",
+  },
+  {
+    number: 5,
+    question: "Is Retriv free to use?",
+    answer: "We offer a free trial. Paid plans are available for higher usage.",
+  },
+  {
+    number: 6,
+    question: "What if my website changes later?",
+    answer: "Retriv can re-crawl your website and update the AI’s knowledge base whenever you want.",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+    <>
+      <div className="bg-[#F9F6F0]">
+        <Header />
+        <main className="min-h-screen">
+          <HeroSection />
+          {/* Pricing  */}
+          <section id="pricing" className="w-full mt-6">
+            <div className="mx-20  flex flex-col items-center">
+              <div className="mb-12">
+                <p className="text-3xl font-semibold text-center mb-4">
+                  One plan that boost your businesss
+                </p>
+                <p className="max-w-2xl text-sm text-center">
+                  Everything you need to turn your website into an AI agent — for just $39/month.
+                </p>
+              </div>
+              <div>
+                <PriceCard />
+              </div>
+            </div>
+          </section>
+          {/* FAQ  */}
+          <section id="faq" className="w-full mt-16">
+            <p className="text-3xl font-semibold text-center mb-4">
+              Frequenly asked questions
+            </p>
+            <div className="mx-20 flex justify-center items-center">
+              <Accordion type="single" collapsible className="max-w-3xl">
+                {Faq.map((item) => (
+                  <AccordionItem key={item.number} value={`item-${item.number}`}>
+                    <AccordionTrigger className="text-xl font-semibold min-w-3xl hover:no-underline cursor-pointer">{item.question}</AccordionTrigger>
+                    <AccordionContent className="text-typography-weak">{item.answer}</AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          </section>
+        </main>
+        <Footer />
+      </div>
+    </>
   );
 }

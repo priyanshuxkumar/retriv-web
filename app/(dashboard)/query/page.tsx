@@ -1,0 +1,106 @@
+'use client';
+
+import { Loader } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useEffect, useState } from "react";
+import AxiosInstance from "@/utils/axiosInstance";
+import { timeAgo } from "@/helper/time";
+import { useUser } from "@/context/user.context";
+
+interface QueryProp {
+    id: string;
+    agentId: string;
+    userQuery: string;
+    time: Date | string;
+}
+
+const useFetchEmails = (agentId: string) => {
+  const [data, setData] = useState<QueryProp[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await AxiosInstance.get(`/api/v1/agent/query/${agentId}`, {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (response.data.success === true) {
+            console.log('her',response.data);
+            setData(response.data.data);
+        }
+      } catch (err: unknown) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [agentId]);
+
+  return {
+    query: data,
+    isLoading,
+  };
+}
+
+export default function Page() {
+    const { user } = useUser();
+    const { query , isLoading } = useFetchEmails(user?.userMetadata.agentId as string);
+ 
+    return (
+    <div className="flex items-center justify-between mx-26 mt-12">
+        <div className="w-full">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+            <div>
+                <p className="font-semibold text-2xl">User query&apos;s</p>
+            </div>
+            </div>
+
+            {/* Body  */}
+            <div className="mt-12">
+            <Table>
+                <TableHeader>
+                <TableRow className="hover:bg-transparent cursor-pointer">
+                    <TableHead className="font-semibold text-base">Query</TableHead>
+                    <TableHead className="w-[100px] font-semibold text-base">Time</TableHead>
+                </TableRow>
+                </TableHeader>
+                <TableBody>
+                {isLoading ? (
+                    <TableRow>
+                    <TableCell colSpan={5}>
+                        <div className="flex justify-center items-center py-4">
+                        <Loader color="white" strokeWidth="2" size="30" />
+                        </div>
+                    </TableCell>
+                    </TableRow>
+                ) : (
+                    query.map((item: QueryProp) => (
+                    <TableRow key={item.id} className="text-base hover:bg-transparent cursor-pointer">
+                        <TableCell className="underline decoration-dashed text-ellipsis pr-8 py-4 truncate">
+                            <span className="cursor-pointer">{item.userQuery}</span>
+                        </TableCell>
+                        <TableCell className="text-right py-4">{timeAgo(item.time as Date)}</TableCell>
+                    </TableRow>
+                    ))
+                )}
+                </TableBody>
+            </Table>
+            </div>
+        </div>
+    </div>
+  );
+}

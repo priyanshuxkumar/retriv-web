@@ -6,14 +6,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <UserProvider>
       <div className="flex">
         {/* Sidebar */}
-        <nav>
+        <nav className="bg-[#FDFBF9]">
           <aside className="w-64 flex flex-col justify-between h-screen border-r border-slate-6 p-4">
             <Sidebar />
           </aside>
         </nav>
 
-        {/* Main Content */}
-        <main className="w-full">
+        {/* Main */}
+        <main className="w-full h-screen bg-[#F9F6F0]">
           <div className="h-[calc(100vh-60px)] overflow-auto">{children}</div>
         </main>
       </div>

@@ -10,9 +10,7 @@ export function HeroSection() {
       <div className="relative z-10 max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
           <h1 className={`text-4xl md:text-6xl font-bold mb-6 tracking-tight ${alegreya.className}`}>
-            Make your website smarter
-            <br />
-            Because it matters
+            Make your website smarter.
           </h1>
           <p className="text-gray-800 text-lg mb-8 max-w-2xl mx-auto">
             Transform your website content into an intelligent assistant that
@@ -30,7 +28,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="relative mx-auto rounded-sm overflow-hidden shadow-2xl ring-6">
+        <div className="relative mx-auto rounded-sm overflow-hidden shadow-2xl ring-6 ring-[#556B2F]">
           <div className="relative">
             <Image
               src={heroImg}

@@ -131,7 +131,7 @@ export default function Page() {
         </div>
         <div>
           {/* Create API Key Button : its open the modal  */}
-          <Button onClick={openCreateModal} variant="secondary">
+          <Button onClick={openCreateModal} className="bg-[#556B2F] hover:bg-[#4A5F25] text-white hover:text-white">
             Create API Key
           </Button>
 
@@ -227,12 +227,12 @@ export default function Page() {
       </div>
         { /** Render Modal for create and edit API Key */
           isModalOpen && 
-              <CreateAndUpdateApiKeyModal
-                  mode={modalMode}
-                  isApiKeyCreateAndUpdateModalOpen={isModalOpen}
-                  setIsApiKeyCreateAndUpdateModalOpen={setIsModalOpen}
-                  onSubmit={handleSubmit}
-              />
+            <CreateAndUpdateApiKeyModal
+                mode={modalMode}
+                isApiKeyCreateAndUpdateModalOpen={isModalOpen}
+                setIsApiKeyCreateAndUpdateModalOpen={setIsModalOpen}
+                onSubmit={handleSubmit}
+            />
         }
     </>
   );

@@ -9,7 +9,9 @@ export function HeroSection() {
     <section className="relative min-h-screen pt-32 pb-16 overflow-hidden">
       <div className="relative z-10 max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h1 className={`text-4xl md:text-6xl font-bold mb-6 tracking-tight ${alegreya.className}`}>
+          <h1
+            className={`text-4xl md:text-6xl font-bold mb-6 tracking-tight ${alegreya.className}`}
+          >
             Make your website smarter.
           </h1>
           <p className="text-gray-800 text-lg mb-8 max-w-2xl mx-auto">
@@ -17,7 +19,7 @@ export function HeroSection() {
             answers customer questions accurately and instantly.
           </p>
           <div className="flex gap-4 justify-center">
-            <Link href={'/signup'}>
+            <Link href={"/signup"}>
               <Button
                 variant="secondary"
                 className="bg-[#556B2F] text-white hover:bg-[#4A5F25]"
@@ -27,19 +29,19 @@ export function HeroSection() {
             </Link>
           </div>
         </div>
-
-        <div className="relative mx-auto rounded-sm overflow-hidden shadow-2xl ring-6 ring-[#556B2F]">
-          <div className="relative">
+        <div className="relative mx-auto rounded-3xl overflow-hidden shadow-2xl">
+          <div className="relative block">
             <Image
               src={heroImg}
               alt="hero-section-image"
               width={1920}
               height={1080}
-              className="w-full h-auto"
+              className="w-full h-auto block"
               priority
             />
           </div>
         </div>
+        <div className="absolute rounded-3xl -bottom-8 left-15 bg-white/20 border-[2px] border-gray-900 w-[1100px] h-[600px] -z-10"></div>
       </div>
     </section>
   );

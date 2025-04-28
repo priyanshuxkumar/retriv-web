@@ -19,7 +19,7 @@ export default function Settings() {
       </div>
 
       <Tabs defaultValue="general" className="w-full">
-        <TabsList className="h-12 pb-0 grid w-full grid-cols-3 bg-transparent border-none shadow-none rounded-none">
+        <TabsList className="sticky top-0 h-12 pb-0 grid w-full grid-cols-3 bg-[#F9F6F0] border-none shadow-none rounded-none">
           <TabsTrigger
             value="general"
             className="flex items-center gap-2 border-b cursor-pointer"

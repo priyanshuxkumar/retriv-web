@@ -21,7 +21,22 @@ export const SigninFormSchema = z.object({
 });
 
 export const SignupFormSchema = z.object({
-  name : z.string({message: "Please enter a valid name"}),
+  name: z.string({ message: "Please enter a valid name" }),
   email: EmailSchema,
   password: PasswordSchema,
 });
+
+export const AgentSettingsSchema = z
+  .object({
+    responseLength: z.enum(["Balanced", "Concise", "Detailed"]).optional(),
+    enableSources: z.boolean().optional(),
+  })
+  .refine(
+    (data) => {
+      return data.responseLength !== undefined || data.enableSources !== undefined;
+    },
+    {
+      message: "At least one field must be provided.",
+      path: ["responseLength"],
+    }
+  );

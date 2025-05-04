@@ -40,7 +40,6 @@ const useFetchEmails = (agentId: string) => {
           }
         );
         if (response.data.success === true) {
-          console.log("her", response.data);
           setData(response.data.data);
         }
       } catch (err: unknown) {
@@ -66,17 +65,17 @@ export default function Page() {
   );
 
   return (
-    <div className="flex items-center justify-between mx-26 mt-12">
+    <div className="flex items-center justify-between mx-4 md:mx-26 md:mt-12">
       <div className="w-full">
         {/* Header */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between py-4 gap-4">
           <div>
             <p className="font-semibold text-2xl">User query&apos;s</p>
           </div>
         </div>
 
         {/* Body  */}
-        <div className="mt-12">
+        <div className="mt-6">
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent cursor-pointer">

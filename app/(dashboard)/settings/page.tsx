@@ -8,8 +8,8 @@ import SettingsGeneralTab from "@/components/Settings/GeneralTab";
 
 export default function Settings() {
   return (
-    <div className="container mx-auto py-10 max-w-4xl">
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+    <div className="container mx-auto pt-4 max-w-4xl md:pt-12 h-screen">
+      <div className="ml-3 mb-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
           <p className="text-muted-foreground">

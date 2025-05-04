@@ -1,6 +1,7 @@
 'use client'
 
 import AxiosInstance from "@/utils/axiosInstance";
+import NoDataFound from "@/components/NoDataFound";
 import { CreateAndUpdateApiKeyModal } from "@/components/ApiKeyModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,7 +12,6 @@ import { timeAgo } from "@/helper/time";
 import { Copy, Eye, Loader } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import NoDataFound from "@/components/NoDataFound";
 
 interface ApiDataProp {
   id: string;
@@ -125,7 +125,7 @@ export default function Page() {
   }
   return (
     <>
-      <div className="flex items-center justify-between mx-26 mt-12">
+      <div className="flex items-center justify-between py-4 mx-4 md:mx-26 md:mt-12">
         <div>
           <p className="font-semibold text-2xl">API keys</p>
         </div>
@@ -177,7 +177,7 @@ export default function Page() {
         </div>
       </div>
 
-      <div className="mx-26 mt-12">
+      <div className="mx-4 md:mx-26 mt-12">
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent cursor-pointer">

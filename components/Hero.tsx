@@ -29,7 +29,7 @@ export function HeroSection() {
             </Link>
           </div>
         </div>
-        <div className="relative mx-auto rounded-3xl overflow-hidden shadow-2xl">
+        <div className="relative mx-auto rounded-2xl overflow-hidden shadow-2xl ring-3 sm:ring-6 ring-[#556B2F] ring-offset-2">
           <div className="relative block">
             <Image
               src={heroImg}
@@ -41,7 +41,6 @@ export function HeroSection() {
             />
           </div>
         </div>
-        <div className="absolute rounded-3xl -bottom-8 left-15 bg-white/20 border-[2px] border-gray-900 w-[1100px] h-[600px] -z-10"></div>
       </div>
     </section>
   );

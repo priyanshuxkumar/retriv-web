@@ -1,4 +1,5 @@
 import { ChevronsUpDown, LogOutIcon, User } from "lucide-react";
+import AxiosInstance from "@/utils/axiosInstance";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -8,7 +9,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 import { useRouter } from "next/navigation";
-import AxiosInstance from "@/utils/axiosInstance";
 import { toast } from "sonner";
 import { useUser } from "@/context/user.context";
 
@@ -68,6 +68,7 @@ export default function UserProfile() {
                     onClick={() => router.push("/profile")}
                     variant={"ghost"}
                     className="w-full justify-start text-base"
+                    disabled
                   >
                     <User />
                     Profile

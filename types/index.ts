@@ -40,3 +40,9 @@ export const AgentSettingsSchema = z
       path: ["responseLength"],
     }
   );
+
+export const PaymentFormSchema = z.object({
+  name: z.string({ message: "Please enter a valid name" }),
+  email: EmailSchema,
+  mobileNumber: z.string({message: "Please enter valid number"})
+})

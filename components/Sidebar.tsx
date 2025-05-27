@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import Link from "next/link";
-import { Bot, Lock, Logs, Settings2, UserRoundSearch } from "lucide-react";
+import { Bot, Lock, Settings2, UserRoundSearch } from "lucide-react";
 import { usePathname } from "next/navigation";
 import UserProfile from "./UserProfile";
 import { alegreya } from "./fonts/fonts";
@@ -17,11 +17,6 @@ const item = [
     icon: <Lock />,
     title: "API keys",
     link: "/apikeys",
-  },
-  {
-    icon: <Logs />,
-    title: "Logs",
-    link: "/logs",
   },
   {
     icon: <UserRoundSearch />,

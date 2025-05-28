@@ -1,5 +1,5 @@
 import AgentDashboard from '@/components/agent/AgentDashboard';
-import { AgentSkeleton } from '@/components/agent/AgentSkeleton';
+import { AgentSkeleton } from '@/components/Skeleton/AgentSkeleton';
 import { Suspense } from 'react';
 
 export default function Page() {

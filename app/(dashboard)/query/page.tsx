@@ -16,7 +16,7 @@ interface QueryProp {
     time: Date | string;
 }
 
-const useFetchEmails = (agentId: string) => {
+const useFetchQueries = (agentId: string) => {
     const [data, setData] = useState<QueryProp[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -24,7 +24,7 @@ const useFetchEmails = (agentId: string) => {
         const fetchData = async () => {
             setIsLoading(true);
             try {
-                const response = await AxiosInstance.get(`/api/v1/agent/query/${agentId}`, {
+                const response = await AxiosInstance.get(`/api/v1/agent/queries/${agentId}`, {
                     withCredentials: true,
                     headers: {
                         'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ const useFetchEmails = (agentId: string) => {
 
 export default function Page() {
     const { user } = useUser();
-    const { query, isLoading } = useFetchEmails(user?.userMetadata.agentId as string);
+    const { query, isLoading } = useFetchQueries(user?.userMetadata.agentId as string);
 
     return (
         <div className="flex items-center justify-between mx-4 md:mx-26 md:mt-12">

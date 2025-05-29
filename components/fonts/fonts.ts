@@ -1,4 +1,4 @@
-import { Alegreya, Aleo, Inter } from 'next/font/google';
+import { Alegreya, Aleo, Inter, Golos_Text } from 'next/font/google';
 
 export const alegreya = Alegreya({
     subsets: ['latin'],
@@ -11,6 +11,11 @@ export const aleo = Aleo({
 });
 
 export const inter = Inter({
+    subsets: ['latin'],
+    weight: ['400', '500', '600', '700', '800'],
+});
+
+export const golasText = Golos_Text({
     subsets: ['latin'],
     weight: ['400', '500', '600', '700', '800'],
 });

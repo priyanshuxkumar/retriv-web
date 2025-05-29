@@ -13,7 +13,7 @@ import { ScrollArea } from '../ui/scroll-area';
 import SkeletonBar from '../Skeleton/skeleton';
 import { MarkdownRenderer } from '../Markdown';
 import Link from 'next/link';
-import { getLocalStorage, setLocalStorage } from '@/helper/storage';
+import { getSessionStorage, setSessionStorage } from '@/helper/storage';
 import { golasText } from '../fonts/fonts';
 
 interface Message {
@@ -32,7 +32,23 @@ interface ChatInterfaceAgentProps {
     isOpen: boolean;
 }
 
+function useClearConversationIdOnRefresh() {
+    useEffect(() => {
+        const handleUnload = () => {
+            sessionStorage.clear();
+        };
+
+        window.addEventListener('beforeunload', handleUnload);
+        return () => {
+            window.removeEventListener('beforeunload', handleUnload);
+        };
+    }, []);
+}
+
 export default function ChatInterfaceAgent({ agentId, isOpen }: ChatInterfaceAgentProps) {
+    // Clear the conversation id on refresh
+    useClearConversationIdOnRefresh();
+
     const [isStreaming, setIsStreaming] = useState(false);
     const [sourcesUrl, setSourcesUrl] = useState<string[]>([]);
     const [chatData, setChatData] = useState<ChatDataProps[]>([]);
@@ -71,7 +87,7 @@ export default function ChatInterfaceAgent({ agentId, isOpen }: ChatInterfaceAge
         setSourcesUrl([]);
 
         try {
-            const id = getLocalStorage('cnvid');
+            const id = getSessionStorage('cnvid');
             const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/agent/chat`, {
                 method: 'POST',
                 headers: {
@@ -113,7 +129,7 @@ export default function ChatInterfaceAgent({ agentId, isOpen }: ChatInterfaceAge
                             const data = JSON.parse(message.substring(6));
                             if (data.error) throw new Error(data.error);
                             if (data.sources) {
-                                setSourcesUrl(data.sources)
+                                setSourcesUrl(data.sources);
                             }
                             if (data.content) {
                                 content += data.content;
@@ -131,16 +147,18 @@ export default function ChatInterfaceAgent({ agentId, isOpen }: ChatInterfaceAge
                         } catch (e) {
                             console.error('Parsing error:', e);
                         }
-                    } else if (message.startsWith('event: id')) { // Handle temp conversation Id
+                    } else if (message.startsWith('event: id')) {
+                        // Handle temp conversation Id
                         const msg = message.substring(10);
-                        if(msg.startsWith('data: ')) {
+                        if (msg.startsWith('data: ')) {
                             const data = JSON.parse(msg.substring(6));
                             console.log(`id: ${data.conversationId}`);
-                            setLocalStorage('cnvid', data.conversationId);
+                            setSessionStorage('cnvid', data.conversationId);
                         }
-                    } else if (message.startsWith('event: error')) { // Handle Error 
+                    } else if (message.startsWith('event: error')) {
+                        // Handle Error
                         const errMsg = message.substring(13);
-                        if(errMsg.startsWith('data: ')) {
+                        if (errMsg.startsWith('data: ')) {
                             const data = JSON.parse(errMsg.substring(6));
                             console.log(`error: ${data.error}`);
                             const errorMessage: Message = {
@@ -153,7 +171,7 @@ export default function ChatInterfaceAgent({ agentId, isOpen }: ChatInterfaceAge
                 }
             }
         } catch (err: unknown) {
-           console.error(err);
+            console.error(err);
         } finally {
             setIsStreaming(false);
             setIsLoading(false);
@@ -164,7 +182,9 @@ export default function ChatInterfaceAgent({ agentId, isOpen }: ChatInterfaceAge
         <>
             {/* Chat Window */}
             {isOpen && (
-                <div className={`${golasText.className} backdrop-blur-xs p-4 md:p-8 bg-transparent fixed w-full h-full flex items-center flex-col rounded-3xl md:rounded-xl overflow-hidden shadow-2xl dark:bg-gray-900 border-gray-200 dark:border-gray-800 z-[99999] animate-fade-in`}>
+                <div
+                    className={`${golasText.className} backdrop-blur-xs p-4 md:p-8 bg-transparent fixed w-full h-full flex items-center flex-col rounded-3xl md:rounded-xl overflow-hidden shadow-2xl dark:bg-gray-900 border-gray-200 dark:border-gray-800 z-[99999] animate-fade-in`}
+                >
                     <style jsx global>
                         {`
                             html,
@@ -233,7 +253,7 @@ export default function ChatInterfaceAgent({ agentId, isOpen }: ChatInterfaceAge
                                                     {item.role === 'assistant' ? (
                                                         <MarkdownRenderer content={item.content} />
                                                     ) : (
-                                                        <p className='font-medium text-[17px]'>{item.content}</p>
+                                                        <p className="font-medium text-[17px]">{item.content}</p>
                                                     )}
                                                 </div>
                                             </div>
@@ -247,8 +267,8 @@ export default function ChatInterfaceAgent({ agentId, isOpen }: ChatInterfaceAge
                                                                 variant="outline"
                                                                 className="h-auto py-2 px-3 text-sm rounded-lg shadow-none hover:bg-muted border"
                                                             >
-                                                                <Link href={source} target='_blank'>
-                                                                {source}
+                                                                <Link href={source} target="_blank">
+                                                                    {source}
                                                                 </Link>
                                                             </Button>
                                                         ))}

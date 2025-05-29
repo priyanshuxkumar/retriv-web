@@ -1,36 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# **Retriv**
 
-## Getting Started
+![Retriv Screenshot](public/og-image.png)
 
-First, run the development server:
+Retriv is a no-code platform that lets businesses create and embed their own AI agents in minutes. These agents can answer visitor questions by understanding and retrieving information from website content.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## **Features**
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Lets users register their AI agent by submitting their website URL.
+- Automatically crawls and indexes the website pages content.
+- Provides a embeddable frontend script to integrate the AI agent on any website.
+- Supports chat-based interactions, with real-time streaming responses from the agent.
+- Enables organizations to track and analyze agent usage, agent responses, performance and response accuracy.
+- Includes conversation history, source-linked answers, and customizable agent settings.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## **Built With**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **[Next.js](https://nextjs.org/)**
+- **[Tailwind CSS](https://tailwindcss.com/)**
+- **[Shadcn/UI](https://ui.shadcn.com/)**
+- **[Node.js](https://nodejs.org/)**
+- **[Express.js](https://expressjs.com/)**
+- **[Python](https://www.python.org/)**
+- **[Redis](https://redis.io/)**
+- **[FastAPI](https://fastapi.tiangolo.com/)**
+- **[Redis](https://redis.io/)**
+- **[Prisma](https://www.prisma.io/)**
+- **[PostgreSQL](https://www.postgresql.org/)**
+- **[Qdrant](https://qdrant.tech/)**
+- **[BeautifulSoup]()**
 
-## Learn More
+## **Demo**
 
-To learn more about Next.js, take a look at the following resources:
+[![Watch Demo](https://i.ytimg.com/vi/IfX9UG23yh8/hq720.jpg?sqp=-oaymwFBCNAFEJQDSFryq4qpAzMIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB8AEB-AH-CYAC0AWKAgwIABABGDEgFSh_MA8=&rs=AOn4CLDsTKMy6lXvvoeY5TydA3jfApVwqw)](https://youtu.be/IfX9UG23yh8)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+ I embedded it on my portfolio website where you can see the agent being embedded and responding based on my website data.

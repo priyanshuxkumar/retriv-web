@@ -13,6 +13,8 @@ import { ScrollArea } from '../ui/scroll-area';
 import SkeletonBar from '../Skeleton/skeleton';
 import { MarkdownRenderer } from '../Markdown';
 import Link from 'next/link';
+import { getLocalStorage, setLocalStorage } from '@/helper/storage';
+import { golasText } from '../fonts/fonts';
 
 interface Message {
     content: string;
@@ -69,7 +71,7 @@ export default function ChatInterfaceAgent({ agentId, isOpen }: ChatInterfaceAge
         setSourcesUrl([]);
 
         try {
-            const id = localStorage.getItem('cnvid');
+            const id = getLocalStorage('cnvid');
             const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/agent/chat`, {
                 method: 'POST',
                 headers: {
@@ -79,7 +81,6 @@ export default function ChatInterfaceAgent({ agentId, isOpen }: ChatInterfaceAge
                     agentId: agentId,
                     query: data.query,
                     conversationId: id || '',
-                    api_key: '',
                 }),
                 referrerPolicy: 'origin',
             });
@@ -130,18 +131,23 @@ export default function ChatInterfaceAgent({ agentId, isOpen }: ChatInterfaceAge
                         } catch (e) {
                             console.error('Parsing error:', e);
                         }
-                    } else if (message.startsWith('event')) {
-                        const idx = message.indexOf(': {');
-                        if (idx !== -1) {
-                            const jsonPart = message.substring(idx + 2).trim();
-                            try {
-                                const data = JSON.parse(jsonPart);
-                                if (data.conversationId) {
-                                    localStorage.setItem('cnvid', data.conversationId);
-                                }
-                            } catch (e) {
-                                console.error('Failed to parse conversationId:', e);
-                            }
+                    } else if (message.startsWith('event: id')) { // Handle temp conversation Id
+                        const msg = message.substring(10);
+                        if(msg.startsWith('data: ')) {
+                            const data = JSON.parse(msg.substring(6));
+                            console.log(`id: ${data.conversationId}`);
+                            setLocalStorage('cnvid', data.conversationId);
+                        }
+                    } else if (message.startsWith('event: error')) { // Handle Error 
+                        const errMsg = message.substring(13);
+                        if(errMsg.startsWith('data: ')) {
+                            const data = JSON.parse(errMsg.substring(6));
+                            console.log(`error: ${data.error}`);
+                            const errorMessage: Message = {
+                                content: data.error,
+                                role: 'assistant',
+                            };
+                            setChatData((prev) => [...prev, errorMessage]);
                         }
                     }
                 }
@@ -158,7 +164,7 @@ export default function ChatInterfaceAgent({ agentId, isOpen }: ChatInterfaceAge
         <>
             {/* Chat Window */}
             {isOpen && (
-                <div className="backdrop-blur-xs p-4 md:p-8 bg-transparent fixed w-full h-full flex items-center flex-col rounded-3xl md:rounded-xl overflow-hidden shadow-2xl dark:bg-gray-900 border-gray-200 dark:border-gray-800 z-[99999] animate-fade-in">
+                <div className={`${golasText.className} backdrop-blur-xs p-4 md:p-8 bg-transparent fixed w-full h-full flex items-center flex-col rounded-3xl md:rounded-xl overflow-hidden shadow-2xl dark:bg-gray-900 border-gray-200 dark:border-gray-800 z-[99999] animate-fade-in`}>
                     <style jsx global>
                         {`
                             html,
@@ -211,9 +217,9 @@ export default function ChatInterfaceAgent({ agentId, isOpen }: ChatInterfaceAge
                         </div>
 
                         {/* Chat Messages  */}
-                        <div className="w-full flex justify-center mt-4">
+                        <div className="w-full flex justify-center">
                             {chatData.length > 0 && (
-                                <ScrollArea className="p-4 w-full max-h-[83vh] rounded-xl border">
+                                <ScrollArea className="mt-4 p-4 w-full max-h-[83vh] rounded-xl border">
                                     {chatData.map((item, idx) => (
                                         <div key={idx} className="space-y-3 mb-5">
                                             {/* User Message */}

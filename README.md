@@ -29,8 +29,8 @@ Retriv is a no-code platform that lets businesses create and embed their own AI 
 - **[Qdrant](https://qdrant.tech/)**
 - **[BeautifulSoup]()**
 
-## **Demo**
+## **Demo Video**
 
-[![Watch Demo](https://i.ytimg.com/vi/IfX9UG23yh8/hq720.jpg?sqp=-oaymwFBCNAFEJQDSFryq4qpAzMIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB8AEB-AH-CYAC0AWKAgwIABABGDEgFSh_MA8=&rs=AOn4CLDsTKMy6lXvvoeY5TydA3jfApVwqw)](https://youtu.be/IfX9UG23yh8)
+[![WatchDemo](https://raw.githubusercontent.com/priyanshuxkumar/retriv-web/e0e56eaabf38e1bcf7ece9526610be4f97da223c/public/thumbnail.png)](https://youtu.be/_V30qqdX1p4)
 
  I embedded it on my portfolio website where you can see the agent being embedded and responding based on my website data.

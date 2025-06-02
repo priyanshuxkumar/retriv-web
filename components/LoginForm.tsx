@@ -128,7 +128,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                         {/* Submit Button */}
                         <Button
                             type="submit"
-                            className="w-full h-10 text-base bg-[#556B2F] hover:bg-[#4A5F25] focus:ring-2 focus:ring-offset-2 focus:ring-[#556B2F]"
+                            className="text-white dark:text-white w-full h-10 text-base bg-[#556B2F] hover:bg-[#4A5F25] focus:ring-2 focus:ring-offset-2 focus:ring-[#556B2F]"
                             disabled={isSubmitting}
                         >
                             {isSubmitting ? (

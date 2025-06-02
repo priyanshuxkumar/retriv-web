@@ -23,7 +23,6 @@ interface QueryDetailProp {
 const useFetchQueryDetails = (id: ParamValue) => {
     const [data, setData] = useState<QueryDetailProp>();
     const [isLoading, setIsLoading] = useState<boolean>(false);
-
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
@@ -97,14 +96,14 @@ export default function Page() {
                         </div>
 
                         <p className="text-xl font-semibold ml-1 mb-2">User query</p>
-                        <div className="border rounded-lg p-4">
+                        <div className="border rounded-lg p-4 bg-muted">
                             <MarkdownRenderer content={query.userQuery} />
                         </div>
 
                         {/* Response and Request Body  */}
-                        <div className="mt-3">
+                        <div className="mt-9">
                             <p className="text-xl font-semibold ml-1 mb-2">Response data</p>
-                            <div className="border rounded-lg p-4">
+                            <div className="border rounded-lg p-4 bg-muted">
                                 <MarkdownRenderer content={agentResponse.response} />
                             </div>
                         </div>

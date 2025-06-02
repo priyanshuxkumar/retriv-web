@@ -11,18 +11,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { docco, darcula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { useTheme } from 'next-themes';
+
 
 const code = ` <Script
     src='https://retriv.in/agent-widget.js'
     data-agent-id='111223334445555' // Your agent id
     data-api-key='rt_1234456789' // Your API Key
+    data-name=example // Agent Name
     strategy='afterInteractive'
     async
   />
 `;
 
 export function AgentDetails({ agent }: { agent: AgentProps }) {
+    const { systemTheme } = useTheme();
     const codeRef = useRef<HTMLDivElement | null>(null);
     const [copied, setCopied] = useState(false);
 
@@ -65,7 +69,7 @@ export function AgentDetails({ agent }: { agent: AgentProps }) {
 
                 <TabsContent value="overview" className="space-y-4 pt-4">
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
-                        <Card className="border shadow-none bg-[#EEECE8]">
+                        <Card className="border shadow-none bg-[#EEECE8] dark:bg-muted">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-lg font-semibold">Total Queries</CardTitle>
                                 <BarChart className="h-4 w-4" />
@@ -75,7 +79,7 @@ export function AgentDetails({ agent }: { agent: AgentProps }) {
                             </CardContent>
                         </Card>
 
-                        <Card className="border shadow-none bg-[#EEECE8]">
+                        <Card className="border shadow-none bg-[#EEECE8] dark:bg-muted">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-lg font-semibold">Last Updated</CardTitle>
                                 <Globe className="h-4 w-4" />
@@ -88,7 +92,7 @@ export function AgentDetails({ agent }: { agent: AgentProps }) {
                             </CardContent>
                         </Card>
 
-                        <Card className="border shadow-none bg-[#EEECE8]">
+                        <Card className="border shadow-none bg-[#EEECE8] dark:bg-muted">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-lg font-semibold">Avg. Response Time</CardTitle>
                                 <Clock9 className="h-4 w-4" />
@@ -98,7 +102,7 @@ export function AgentDetails({ agent }: { agent: AgentProps }) {
                             </CardContent>
                         </Card>
 
-                        <Card className="border shadow-none bg-[#EEECE8]">
+                        <Card className="border shadow-none bg-[#EEECE8] dark:bg-muted">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-lg font-semibold">This Month Queries</CardTitle>
                                 <BarChart className="h-4 w-4" />
@@ -111,7 +115,7 @@ export function AgentDetails({ agent }: { agent: AgentProps }) {
                 </TabsContent>
 
                 <TabsContent value="training" className="pt-4">
-                    <Card className="border shadow-none bg-[#EEECE8]">
+                    <Card className="border shadow-none bg-[#EEECE8] dark:bg-muted">
                         <CardHeader>
                             <div className="flex items-center gap-2">
                                 <Hammer className="h-5 w-5" />
@@ -160,7 +164,7 @@ export function AgentDetails({ agent }: { agent: AgentProps }) {
                 </TabsContent>
 
                 <TabsContent value="integration" className="pt-4">
-                    <Card className="bg-[#EEECE8]">
+                    <Card className="bg-[#EEECE8] dark:bg-muted">
                         <CardHeader>
                             <CardTitle>Website Integration</CardTitle>
                             <CardDescription>Add your agent to your website</CardDescription>
@@ -171,22 +175,22 @@ export function AgentDetails({ agent }: { agent: AgentProps }) {
                                     <h3 className="font-medium mb-2">Add this script to your website</h3>
                                     <div
                                         ref={codeRef}
-                                        className="bg-background rounded-md p-4 font-mono text-sm overflow-x-auto"
+                                        className="bg-background rounded-xl font-mono text-sm overflow-x-auto"
                                     >
                                         <SyntaxHighlighter
                                             language="javascript"
-                                            style={docco}
+                                            style={systemTheme === 'dark' ? darcula : docco}
                                             customStyle={{
                                                 padding: '12px',
                                                 fontSize: '15px',
-                                                borderRadius: '8px',
+                                                borderRadius: '12px',
                                             }}
                                             wrapLongLines={true}
                                         >
                                             {code}
                                         </SyntaxHighlighter>
                                     </div>
-                                    <Button onClick={handleCopyCode} variant="outline" size="sm" className="mt-2">
+                                    <Button onClick={handleCopyCode} variant="outline" size="sm" className="mt-4">
                                         {copied ? 'Copied!' : 'Copy'}
                                     </Button>
                                 </div>

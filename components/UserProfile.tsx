@@ -1,88 +1,133 @@
-import { ChevronsUpDown, LogOutIcon, User } from 'lucide-react';
-import AxiosInstance from '@/utils/axiosInstance';
-import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-
+'use client';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import { useUser } from '@/context/user.context';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useTheme } from 'next-themes';
+import { ChevronDown, LogOut, Moon, Sun, Laptop, SunDim, UserCircle } from 'lucide-react';
+import { User } from '@/context/user.context';
 
-export default function UserProfile() {
-    const { user } = useUser();
+interface UserProfileProps {
+    user: User;
+    handleLogout: () => void;
+}
+
+export default function UserProfile({ user, handleLogout }: UserProfileProps) {
     const router = useRouter();
+    const { setTheme } = useTheme();
 
-    const handleLogout = async () => {
-        try {
-            const response = await AxiosInstance.post(
-                '/api/v1/auth/logout',
-                {},
-                {
-                    withCredentials: true,
-                },
-            );
-            if (response.data.success === true) {
-                router.push('/login');
-                toast(response.data.message);
-            }
-        } catch (err: unknown) {
-            console.error(err);
-        }
-    };
-    return (
-        <>
-            {!user ? (
-                <div className="flex justify-center items-center w-full">Loading...</div>
-            ) : (
-                <div className="flex justify-between items-center px-1">
-                    <div className="flex gap-2 items-center">
-                        <div>
-                            <Avatar className="rounded-md border w-11 h-11">
-                                <AvatarImage src={user?.userMetadata.avatarUrl} />
-                                <AvatarFallback className="rounded-md uppercase text-xl font-semibold">
-                                    {user?.userMetadata.name[0].toUpperCase()}
-                                </AvatarFallback>
-                            </Avatar>
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="text-base font-semibold truncate">{user?.userMetadata.name}</span>
-                            <span className="text-sm">Free plan</span>
-                        </div>
-                    </div>
-                    <div>
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button variant="ghost" className="cursor-pointer hover:bg-transparent">
-                                    <ChevronsUpDown />
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-50 py-2 px-1">
-                                <div>
-                                    <Button
-                                        onClick={() => router.push('/profile')}
-                                        variant={'ghost'}
-                                        className="w-full justify-start text-base"
-                                        disabled
-                                    >
-                                        <User />
-                                        Profile
-                                    </Button>
-                                </div>
-                                <div>
-                                    <Button
-                                        variant={'ghost'}
-                                        className="w-full justify-start text-base text-red-500 hover:text-red-500"
-                                        onClick={handleLogout}
-                                    >
-                                        <LogOutIcon />
-                                        Logout
-                                    </Button>
-                                </div>
-                            </PopoverContent>
-                        </Popover>
-                    </div>
+    if (!user) {
+        return (
+            <div className="flex h-14 w-full items-center justify-center">
+                <div className="flex items-center gap-2">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                    <span className="text-sm text-muted-foreground">Loading...</span>
                 </div>
-            )}
-        </>
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex items-center justify-between gap-4 rounded-lg bg-muted p-3">
+            <div className="flex items-center gap-3">
+                <Avatar className="h-10 w-10 rounded-md border">
+                    <AvatarImage src={user?.userMetadata.avatarUrl || '/placeholder.svg'} />
+                    <AvatarFallback className="rounded-md bg-primary/10 text-primary">
+                        {user?.userMetadata.name[0].toUpperCase()}
+                    </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col">
+                    <span className="font-medium leading-none">{user?.userMetadata.name}</span>
+                    <span className="text-xs text-muted-foreground">Free plan</span>
+                </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <ChevronDown className="h-4 w-4" />
+                            <span className="sr-only">Open menu</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuGroup>
+                            <DropdownMenuItem onClick={() => router.push('/profile')}>
+                                <UserCircle className="mr-2 h-4 w-4" />
+                                <span>Profile</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <SunDim className="mr-2 h-4 w-4" />
+                                <span>Theme</span>
+                                <TooltipProvider delayDuration={300}>
+                                    <div className="flex items-center rounded-2xl border bg-background">
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 rounded-2xl"
+                                                    onClick={() => setTheme('light')}
+                                                >
+                                                    <Sun className="h-4 w-4" />
+                                                    <span className="sr-only">Light theme</span>
+                                                </Button>
+                                            </TooltipTrigger>
+                                            <TooltipContent side="bottom">Light</TooltipContent>
+                                        </Tooltip>
+
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 rounded-2xl"
+                                                    onClick={() => setTheme('dark')}
+                                                >
+                                                    <Moon className="h-4 w-4" />
+                                                    <span className="sr-only">Dark theme</span>
+                                                </Button>
+                                            </TooltipTrigger>
+                                            <TooltipContent side="bottom">Dark</TooltipContent>
+                                        </Tooltip>
+
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 rounded-2xl"
+                                                    onClick={() => setTheme('system')}
+                                                >
+                                                    <Laptop className="h-4 w-4" />
+                                                    <span className="sr-only">System theme</span>
+                                                </Button>
+                                            </TooltipTrigger>
+                                            <TooltipContent side="bottom">System</TooltipContent>
+                                        </Tooltip>
+                                    </div>
+                                </TooltipProvider>
+                            </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+                            <LogOut className="mr-2 h-4 w-4" />
+                            <span>Log out</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+        </div>
     );
 }

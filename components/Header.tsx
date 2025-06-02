@@ -5,7 +5,7 @@ import { alegreya } from './fonts/fonts';
 export function Header() {
     return (
         <header className="fixed top-0 left-0 right-0 z-50">
-            <div className="flex items-center justify-between px-6 py-4 bg-[#F9F6F0] border-b">
+            <div className="flex items-center justify-between px-6 py-4 bg-[#F9F6F0] dark:bg-black border-b">
                 <div className="flex items-center gap-2">
                     <Link href="/" className={`flex items-center gap-3 ${alegreya.className}`}>
                         <span className="font-bold text-2xl">Retriv</span>

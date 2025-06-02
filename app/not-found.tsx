@@ -2,13 +2,13 @@ import Link from 'next/link';
 
 export default function NotFound() {
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-[#F9F6F0] px-4 py-16 text-center">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-[#F9F6F0] dark:bg-muted px-4 py-16 text-center">
             <div className="max-w-2xl mx-auto">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-medium text-black mb-8">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-medium text-black dark:text-white mb-8">
                     Oops, we couldn&apos;t find that page.
                 </h1>
 
-                <p className="text-lg text-gray-700 mb-10 max-w-xl mx-auto">
+                <p className="text-lg text-gray-700 dark:text-neutral-300 mb-10 max-w-xl mx-auto">
                     The page you&apos;re looking for doesnt exist or has been moved to another location.
                 </p>
 

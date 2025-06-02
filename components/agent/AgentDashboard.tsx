@@ -98,10 +98,10 @@ export default function AgentDashboard() {
                                 <div className="inline-flex items-center justify-center p-3 bg-emerald-100 rounded-full mb-6">
                                     <Bot className="h-8 w-8 text-emerald-600" />
                                 </div>
-                                <h1 className="text-4xl font-bold tracking-tight text-slate-900 mb-4">
+                                <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-white mb-4">
                                     Register your Agent
                                 </h1>
-                                <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+                                <p className="text-xl text-slate-600 dark:text-neutral-200  max-w-2xl mx-auto">
                                     You haven&apos;t created an agent yet. Create one to help visitors navigate your
                                     website.
                                 </p>
@@ -110,10 +110,10 @@ export default function AgentDashboard() {
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
                             {cardData.map((item, idx) => (
-                                <div key={idx} className="bg-white p-6 rounded-xl shadow-lg">
+                                <div key={idx} className="bg-white dark:bg-muted p-6 rounded-xl shadow-lg">
                                     <div className={`bg-${item.bgColor} p-2 rounded-lg w-fit mb-4`}>{item.icon}</div>
-                                    <h3 className="font-semibold text-slate-900 mb-2">{item.heading}</h3>
-                                    <p className="text-slate-600 text-sm">{item.description}</p>
+                                    <h3 className="font-semibold text-slate-900 dark:text-white mb-2">{item.heading}</h3>
+                                    <p className="text-slate-600 dark:text-white text-sm">{item.description}</p>
                                 </div>
                             ))}
                         </div>
@@ -130,7 +130,7 @@ export default function AgentDashboard() {
                                             : 'Create your agent'}
                                     </Button>
                                 </DialogTrigger>
-                                <DialogContent className="sm:max-w-md">
+                                <DialogContent className="sm:max-w-md dark:bg-muted">
                                     <DialogTitle></DialogTitle>
                                     <CreateAgentForm onSuccess={() => setIsDialogOpen(false)} />
                                 </DialogContent>

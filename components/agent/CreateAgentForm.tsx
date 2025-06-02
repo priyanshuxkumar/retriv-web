@@ -57,7 +57,7 @@ export function CreateAgentForm({ onSuccess }: CreateAgentFormProps) {
 
     return (
         <div className="max-w-md w-full">
-            <Card className="overflow-hidden pt-1 gap-2 bg-white border-none shadow-none">
+            <Card className="overflow-hidden pt-1 gap-2 bg-white dark:bg-muted border-none shadow-none">
                 <CardHeader className="pb-4 px-0">
                     <CardDescription className="text-slate-500 px-0">
                         Fill in the details below to create a custom AI agent for your website
@@ -79,11 +79,11 @@ export function CreateAgentForm({ onSuccess }: CreateAgentFormProps) {
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="space-y-2">
-                            <Label htmlFor="name" className="text-sm font-medium text-slate-700">
+                            <Label htmlFor="name" className="text-sm font-medium text-slate-700 dark:text-white">
                                 Agent Name
                             </Label>
                             <div className="relative">
-                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-white">
                                     <Bot className="h-5 w-5" />
                                 </div>
                                 <Input
@@ -96,17 +96,17 @@ export function CreateAgentForm({ onSuccess }: CreateAgentFormProps) {
                                     className="pl-10 py-6 border-slate-200 focus:border-violet-500 focus:ring-violet-500"
                                 />
                             </div>
-                            <p className="text-xs text-slate-500 mt-1">
+                            <p className="text-xs text-slate-500 dark:text-neutral-300 mt-1">
                                 Choose a descriptive name for your AI assistant
                             </p>
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="source-url" className="text-sm font-medium text-slate-700">
+                            <Label htmlFor="source-url" className="text-sm font-medium text-slate-700 dark:text-white">
                                 Website URL
                             </Label>
                             <div className="relative">
-                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-white">
                                     <Globe className="h-5 w-5" />
                                 </div>
                                 <Input
@@ -118,14 +118,14 @@ export function CreateAgentForm({ onSuccess }: CreateAgentFormProps) {
                                     className="pl-10 py-6 border-slate-200 focus:border-violet-500 focus:ring-violet-500"
                                 />
                             </div>
-                            <p className="text-xs text-slate-500 mt-1">
+                            <p className="text-xs text-slate-500 dark:text-neutral-300 mt-1">
                                 We will automatically crawl this website to train your AI agent
                             </p>
                         </div>
 
                         <Button
                             type="submit"
-                            className="w-full py-6 bg-black hover:bg-black/80 text-white font-medium transition-all"
+                            className="w-full py-6 bg-[#556B2F] hover:bg-[#4A5F25] text-white font-medium transition-all"
                             disabled={isLoading}
                         >
                             {isLoading ? (
@@ -139,7 +139,7 @@ export function CreateAgentForm({ onSuccess }: CreateAgentFormProps) {
                         </Button>
                     </form>
                 </CardContent>
-                <CardFooter className="bg-slate-50 border-t border-slate-100 px-6 py-4 mt-3">
+                <CardFooter className="bg-slate-50 dark:bg-muted border-slate-100 px-6 py-4 mt-3">
                     <p className="text-xs text-slate-500 text-center w-full">
                         Your agent will be ready to answer questions about your website content after crawling is
                         complete

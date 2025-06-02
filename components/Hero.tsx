@@ -12,7 +12,7 @@ export function HeroSection() {
                     <h1 className={`text-4xl md:text-6xl font-bold mb-6 tracking-tight ${alegreya.className}`}>
                         Make your website smarter.
                     </h1>
-                    <p className="text-gray-800 text-lg mb-8 max-w-2xl mx-auto">
+                    <p className="text-gray-800 dark:text-white text-lg mb-8 max-w-2xl mx-auto">
                         Transform your website content into an intelligent assistant that answers customer questions
                         accurately and instantly.
                     </p>

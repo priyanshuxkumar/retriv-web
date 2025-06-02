@@ -206,7 +206,7 @@ export default function Page() {
                                         <span className="cursor-pointer">{item.name}</span>
                                     </TableCell>
                                     <TableCell className="py-4">
-                                        <span className="bg-[#EEECE8] p-1 rounded-sm text-sm">
+                                        <span className="bg-[#EEECE8] dark:bg-muted p-1 rounded-sm text-sm">
                                             {item.shortToken}....
                                         </span>
                                     </TableCell>

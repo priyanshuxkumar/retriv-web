@@ -34,7 +34,7 @@ const Faq = [
 export default function Home() {
     return (
         <>
-            <div className="bg-[#F9F6F0]">
+            <div className="bg-[#F9F6F0] dark:bg-black">
                 <Header />
                 <main className="min-h-screen">
                     <HeroSection />

@@ -45,5 +45,5 @@ export const PaymentFormSchema = z.object({
 });
 
 export const ChatInputSchema = z.object({
-    query: z.string().nonempty({ message: 'Field cannot be empty' }),
+    query: z.string(),
 });

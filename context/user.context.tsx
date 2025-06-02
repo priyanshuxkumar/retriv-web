@@ -3,7 +3,7 @@
 import AxiosInstance from '@/utils/axiosInstance';
 import { createContext, useContext, useEffect, useState } from 'react';
 
-interface User {
+export interface User {
     id: number;
     email: string;
     userMetadata: {

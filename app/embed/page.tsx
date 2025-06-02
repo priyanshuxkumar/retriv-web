@@ -2,17 +2,37 @@
 
 import ChatInterfaceAgent from '@/components/agent/AgentChat';
 import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 
 export default function EmbedChatPage() {
-    const searchParams = useSearchParams();
-    const agentId = searchParams.get('agent_id');
+    const [agentId, setAgentId] = useState<string>('');
+    const [agentName, setAgentName] = useState<string>('');
+    const [apiKey, setApiKey] = useState<string>('');
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
     useEffect(() => {
-        setTimeout(() => setIsOpen(true), 1500);
+        setTimeout(() => setIsOpen(true), 2000);
     }, []);
 
+    const handleClose = () => {
+        setIsOpen(false);
+
+        // Close the modal
+        window.parent.postMessage({ type: 'CLOSE_CHAT_IFRAME' }, '*');
+    };
+
+    useEffect(() => {
+        const listener = (event: MessageEvent) => {
+            if (event.data?.type === 'INIT_CHAT') {
+                const { agentId, agentName, apiKey } = event.data.payload;
+                setAgentId(agentId);
+                setAgentName(agentName);
+                setApiKey(apiKey);
+            }
+        };
+
+        window.addEventListener('message', listener);
+        return () => window.removeEventListener('message', listener);
+    }, []);
     return (
         <div className="w-full h-full">
             {!isOpen && (
@@ -31,7 +51,13 @@ export default function EmbedChatPage() {
                     </div>
                 </div>
             )}
-            <ChatInterfaceAgent agentId={agentId as string} isOpen={isOpen} />
+            <ChatInterfaceAgent
+                agentName={agentName}
+                agentId={agentId}
+                apiKey={apiKey}
+                isOpen={isOpen}
+                onClose={handleClose}
+            />
         </div>
     );
 }

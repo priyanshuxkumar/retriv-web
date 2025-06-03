@@ -223,7 +223,7 @@ export default function ChatInterfaceAgent({ agentName, agentId, apiKey, isOpen,
                         }
                     `}</style>
 
-                    <div className="px-5 py-1 flex flex-col border border-gray-200 shadow-lg rounded-md w-full bg-white dark:bg-black max-w-screen h-[84vh] md:w-[min(600px,100%)] lg:w-[min(720px,100%)] 2xl:w-[min(760px,100%)] z-[99999]">
+                    <div className="px-5 py-1 flex flex-col border border-gray-200 dark:border-muted shadow-lg rounded-md w-full bg-white dark:bg-black max-w-screen h-[84vh] md:w-[min(600px,100%)] lg:w-[min(720px,100%)] 2xl:w-[min(760px,100%)] z-[99999]">
                         <div>
                             <div className="text-neutral-500 text-sm py-3">Ask AI</div>
                         </div>
@@ -284,7 +284,7 @@ export default function ChatInterfaceAgent({ agentName, agentId, apiKey, isOpen,
                         <div className="flex-shrink-0 py-t py-2 px-5">
                             <Form {...form}>
                                 <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-                                    <div className="bg-gray-50 gap-3 shadow-md w-full flex justify-between items-center rounded-lg px-2">
+                                    <div className="bg-gray-50 dark:bg-muted gap-3 shadow-md w-full flex justify-between items-center rounded-lg px-2">
                                         <FormField
                                             control={form.control}
                                             name="query"
@@ -297,7 +297,7 @@ export default function ChatInterfaceAgent({ agentName, agentId, apiKey, isOpen,
                                                                 field.ref(e);
                                                                 inputRef.current = e;
                                                             }}
-                                                            className="min-h-[unset] overflow-hidden w-full resize-none placeholder:text-gray-500 dark:placeholder:text-gray-dark-200 border-none outline-none shadow-none px-3 py-2 ml-1 mr-2 max-h-[200px] overflow-y-auto disabled:cursor-not-allowed focus:border-0 active:border-0 focus-visible:ring-0 "
+                                                            className="min-h-[unset] overflow-hidden w-full resize-none dark:bg-muted placeholder:text-gray-500 dark:placeholder:text-gray-dark-200 border-none outline-none shadow-none px-3 py-2 ml-1 mr-2 max-h-[200px] overflow-y-auto disabled:cursor-not-allowed focus:border-0 active:border-0 focus-visible:ring-0 "
                                                             placeholder="Enter your query..."
                                                             disabled={isLoading || isStreaming}
                                                             onKeyDown={(e) => {

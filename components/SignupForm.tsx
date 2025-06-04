@@ -9,11 +9,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AxiosInstance from '@/utils/axiosInstance';
-import GoogleIcon from './Icons/GoogleIcon';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { SignupFormSchema } from '@/types';
+import GoogleLoginButton from './GoogleLogin';
 
 export function SignupForm() {
     const router = useRouter();
@@ -156,15 +156,7 @@ export function SignupForm() {
                 </div>
 
                 {/* Google Login */}
-                <Button
-                    variant="outline"
-                    className="bg-white hover:bg-white/80 h-10 text-base w-full font-semibold flex items-center gap-2 border-gray-300"
-                    type="button"
-                    aria-label="Login with Google"
-                >
-                    <GoogleIcon />
-                    <span>Sign up with Google</span>
-                </Button>
+                <GoogleLoginButton />
 
                 {/* Terms */}
                 <div className="text-balance text-center text-xs text-muted-foreground mt-4">

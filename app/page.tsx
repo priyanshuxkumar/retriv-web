@@ -1,5 +1,6 @@
 'use client';
 
+import { aleo } from '@/components/fonts/fonts';
 import { CheckCircle, Loader2, Sparkles, User } from 'lucide-react';
 import Footer from '@/components/Footer';
 import { Header } from '@/components/Header';
@@ -37,7 +38,7 @@ const Faq = [
 export default function Home() {
     return (
         <>
-            <div className="bg-[#F9F6F0] dark:bg-black">
+            <div className={`bg-[#F9F6F0] dark:bg-black ${aleo.className}`}>
                 <Header />
                 <main className="min-h-screen">
                     <HeroSection />

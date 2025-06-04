@@ -1,26 +1,37 @@
 import Link from 'next/link';
+import { orbitron } from './fonts/fonts';
 
 export default function Footer() {
     return (
-        <footer className="w-full border-none backdrop-blur-sm">
-            <div className="mx-auto container flex flex-col gap-8 px-4 md:px-6 ">
-                <div className="flex flex-col gap-4 sm:flex-row justify-between items-center py-8">
-                    <p className="text-xs text-muted-foreground">
-                        &copy; {new Date().getFullYear()} <span className="font-bold">Retriv.</span> All rights
-                        reserved.
-                    </p>
-                    <div className="flex gap-4">
-                        <Link
-                            href="/legal/privacy-policy"
-                            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-                        >
-                            Privacy Policy
+        <footer className="relative py-10 mt-10">
+            <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-neutral-200 dark:via-neutral-800 to-transparent" />
+
+            <div className="container max-w-3xl mx-auto px-4 pt-8">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+                    <div className="flex items-center gap-3 text-center sm:text-left">
+                        <Link href="/" className="flex items-center gap-2">
+                            <span className={`text-xl font-bold ${orbitron.className}`}>Retriv</span>
+                        </Link>
+                        <span className="text-sm text-neutral-500 dark:text-neutral-400 ml-2 mt-1 ">
+                            © {new Date().getFullYear()} Retriv by Priyanshu Kumar
+                        </span>
+                    </div>
+
+                    <div className="flex items-center gap-6 text-sm text-neutral-500 dark:text-neutral-400">
+                        <Link href="/" className="hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors">
+                            Home
                         </Link>
                         <Link
                             href="/legal/terms-of-services"
-                            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                            className="hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors"
                         >
-                            Terms of Service
+                            Terms
+                        </Link>
+                        <Link
+                            href="/legal/privacy-policy"
+                            className="hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors"
+                        >
+                            Privacy
                         </Link>
                     </div>
                 </div>

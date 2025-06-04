@@ -42,6 +42,9 @@ export const PaymentFormSchema = z.object({
     name: z.string({ message: 'Please enter a valid name' }),
     email: EmailSchema,
     mobileNumber: z.string({ message: 'Please enter valid number' }),
+    terms: z.literal(true, {
+        errorMap: () => ({ message: 'You must accept the terms and privacy policy' }),
+    }),
 });
 
 export const ChatInputSchema = z.object({

@@ -40,13 +40,13 @@ export default function UserProfile({ user, handleLogout }: UserProfileProps) {
         <div className="flex items-center justify-between gap-4 rounded-lg bg-muted p-3">
             <div className="flex items-center gap-3">
                 <Avatar className="h-10 w-10 rounded-md border">
-                    <AvatarImage src={user?.userMetadata.avatarUrl || '/placeholder.svg'} />
+                    <AvatarImage src={user?.userMetadata.avatarUrl} />
                     <AvatarFallback className="rounded-md bg-primary/10 text-primary">
                         {user?.userMetadata.name[0].toUpperCase()}
                     </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
-                    <span className="font-medium leading-none">{user?.userMetadata.name}</span>
+                    <span className="w-28 font-medium leading-none text-sm truncate">{user?.userMetadata.name}</span>
                     <span className="text-xs text-muted-foreground">Free plan</span>
                 </div>
             </div>

@@ -41,7 +41,10 @@ export const AgentSettingsSchema = z
 export const PaymentFormSchema = z.object({
     name: z.string({ message: 'Please enter a valid name' }),
     email: EmailSchema,
-    mobileNumber: z.string({ message: 'Please enter valid number' }),
+    phone: z
+        .string()
+        .min(10, { message: 'Phone number is too short' })
+        .regex(/^\+?\d+$/, { message: 'Invalid phone number format' }),
     terms: z.literal(true, {
         errorMap: () => ({ message: 'You must accept the terms and privacy policy' }),
     }),

@@ -1,15 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
+import AxiosInstance from '@/utils/axiosInstance';
 import { useEffect, useState } from 'react';
-import { Check, ChevronsUpDown } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import AxiosInstance from '@/utils/axiosInstance';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -19,10 +15,11 @@ import Script from 'next/script';
 import { useParams } from 'next/navigation';
 import { ParamValue } from 'next/dist/server/request/params';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { PhoneInput } from '../PhoneInput';
 
 declare global {
     interface Window {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         Razorpay: any;
     }
 }
@@ -32,16 +29,6 @@ interface RazorpayResponse {
     razorpay_payment_id: string;
     razorpay_signature: string;
 }
-
-const countries = [
-    { label: 'United States', value: 'us' },
-    { label: 'India', value: 'in' },
-];
-
-const countryToCurrency: { [key: string]: string } = {
-    us: 'USD',
-    in: 'INR',
-};
 
 const useFetchPlanDetails = (id: ParamValue) => {
     const [amount, setAmount] = useState<number | null>(10);
@@ -70,18 +57,18 @@ export default function PaymentForm() {
     const { id } = useParams(); // Plan Id
     const { amount } = useFetchPlanDetails(id);
     const router = useRouter();
-    const [open, setOpen] = useState(false);
-    const [selectedCountry, setSelectedCountry] = useState(countries[1]);
-    const [currency, setCurrency] = useState<string>('INR');
+
+    const [isPaymentHappening, setIsPaymentHappening] = useState<boolean>(false);
 
     const form = useForm<z.infer<typeof PaymentFormSchema>>({
         resolver: zodResolver(PaymentFormSchema),
         defaultValues: {
             name: '',
             email: '',
-            mobileNumber: '',
+            phone: '',
         },
     });
+    const termsAccepted = form.watch('terms');
 
     const handleCreateOrder = async () => {
         try {
@@ -89,7 +76,7 @@ export default function PaymentForm() {
                 '/api/payment/checkout',
                 {
                     planId: id,
-                    currency: currency,
+                    currency: 'INR',
                 },
                 {
                     withCredentials: true,
@@ -104,6 +91,7 @@ export default function PaymentForm() {
     };
 
     async function onSubmit(values: z.infer<typeof PaymentFormSchema>) {
+        setIsPaymentHappening(true);
         const orderId = await handleCreateOrder();
         try {
             if (!window.Razorpay) {
@@ -114,7 +102,7 @@ export default function PaymentForm() {
             const options = {
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
                 amount: amount,
-                currency,
+                currency: 'INR',
                 name: 'Retriv',
                 description: 'Payment for subscription',
                 order_id: orderId,
@@ -124,7 +112,7 @@ export default function PaymentForm() {
                 prefill: {
                     name: values.name,
                     email: values.email,
-                    contact: values.mobileNumber,
+                    contact: values.phone,
                 },
                 notes: {
                     address: 'Customer Address',
@@ -137,12 +125,13 @@ export default function PaymentForm() {
             const paymentObject = new window.Razorpay(options);
             paymentObject.open();
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             paymentObject.on('payment.failed', function (response: any) {
                 alert('Payment failed. Please try again. Error: ' + response.error.description);
             });
         } catch (err: unknown) {
             console.error(err);
+        } finally {
+            setIsPaymentHappening(false);
         }
     }
 
@@ -173,16 +162,12 @@ export default function PaymentForm() {
             alert('Error verifying payment');
         }
     };
-
-    const handleCurrency = (countryCode: string) => {
-        setCurrency(countryToCurrency[countryCode]);
-    };
     return (
         <>
             <Script id="razorpay-checkout-js" src="https://checkout.razorpay.com/v1/checkout.js" />
             <div className="space-y-6">
                 <div>
-                    <h2 className="text-3xl font-bold">Confirm and Pay</h2>
+                    <h2 className="text-3xl font-bold text-black dark:text-white">Confirm and Pay</h2>
                 </div>
 
                 <Form {...form}>
@@ -228,16 +213,16 @@ export default function PaymentForm() {
                         <div className="space-y-2">
                             <FormField
                                 control={form.control}
-                                name="mobileNumber"
+                                name="phone"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-base">Mobile number</FormLabel>
+                                        <FormLabel className="text-base">Phone Number</FormLabel>
                                         <FormControl>
-                                            <Input
-                                                type="text"
-                                                placeholder="+91 9999999999"
-                                                aria-label="Mobile number"
-                                                {...field}
+                                            <PhoneInput
+                                                placeholder="9999999999"
+                                                value={field.value}
+                                                onChange={field.onChange}
+                                                defaultCountry="IN"
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -246,68 +231,38 @@ export default function PaymentForm() {
                             />
                         </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="country">Country</Label>
-                            <Popover open={open} onOpenChange={setOpen}>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        role="combobox"
-                                        aria-expanded={open}
-                                        className="w-full justify-between"
-                                    >
-                                        {selectedCountry ? selectedCountry.label : 'Select country...'}
-                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-full p-0">
-                                    <Command>
-                                        <CommandInput placeholder="Search country..." />
-                                        <CommandList>
-                                            <CommandEmpty>No country found.</CommandEmpty>
-                                            <CommandGroup>
-                                                {countries.map((country) => (
-                                                    <CommandItem
-                                                        key={country.value}
-                                                        value={country.value}
-                                                        onSelect={() => {
-                                                            setSelectedCountry(country);
-                                                            handleCurrency(country.value as string);
-                                                            setOpen(false);
-                                                        }}
-                                                    >
-                                                        <Check
-                                                            className={cn(
-                                                                'mr-2 h-4 w-4',
-                                                                selectedCountry?.value === country.value
-                                                                    ? 'opacity-100'
-                                                                    : 'opacity-0',
-                                                            )}
-                                                        />
-                                                        {country.label}
-                                                    </CommandItem>
-                                                ))}
-                                            </CommandGroup>
-                                        </CommandList>
-                                    </Command>
-                                </PopoverContent>
-                            </Popover>
-                        </div>
-
                         <div className="flex items-center space-x-2 pt-2">
-                            <Checkbox id="business" />
-                            <label
-                                htmlFor="business"
-                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                            >
-                                I&apos;m purchasing as a business
-                            </label>
+                            <FormField
+                                control={form.control}
+                                name="terms"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-row items-start space-x-2 space-y-0">
+                                        <FormControl>
+                                            <Checkbox
+                                                id="terms"
+                                                checked={field.value}
+                                                onCheckedChange={field.onChange}
+                                            />
+                                        </FormControl>
+                                        <FormLabel htmlFor="terms" className="text-sm leading-none gap-1">
+                                            Accept{' '}
+                                            <Link href="/legal/terms-of-services" className="text-blue-400 underline">
+                                                Terms
+                                            </Link>{' '}
+                                            and{' '}
+                                            <Link href="/legal/privacy-policy" className="text-blue-400 underline">
+                                                Privacy
+                                            </Link>
+                                        </FormLabel>
+                                    </FormItem>
+                                )}
+                            />
                         </div>
 
                         <Button
                             type="submit"
                             className="w-full bg-[#556B2F] hover:bg-[#4A5F25] text-white"
-                            // disabled={!isCreating}
+                            disabled={isPaymentHappening || !termsAccepted}
                         >
                             PAY NOW
                         </Button>
@@ -320,12 +275,12 @@ export default function PaymentForm() {
                 </p>
 
                 <div className="mt-4 flex justify-center space-x-4 text-xs text-gray-500">
-                    <a href="#" className="hover:underline">
+                    <Link href="/legal/terms-of-services" className="hover:underline">
                         Terms
-                    </a>
-                    <a href="#" className="hover:underline">
+                    </Link>
+                    <Link href="/legal/privacy-policy" className="hover:underline">
                         Privacy
-                    </a>
+                    </Link>
                 </div>
             </div>
         </>

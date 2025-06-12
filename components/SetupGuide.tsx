@@ -30,35 +30,35 @@ export default function SetupGuide() {
 
             <ol className="space-y-4 text-gray-800 dark:text-gray-200">
                 <li>
-                    <p className="font-bold">1. Sign up and register your website 🌐</p>
+                    <p className="font-bold">1. Sign up and register your website</p>
                     <p>Provide your website URL where you want the agent to appear.</p>
                 </li>
 
                 <li>
-                    <p className="font-bold">2. We auto-crawl and retrieve your content 🧠</p>
+                    <p className="font-bold">2. We auto-crawl and retrieve your content</p>
                     <p>Retriv will scan your docs, blogs, and help content automatically.</p>
                 </li>
 
                 <li>
-                    <p className="font-bold">3. Add the script snippet to your site 🔌</p>
+                    <p className="font-bold">3. Add the script snippet to your site</p>
                     <p>
                         Insert this script anywhere in your frontend (e.g. inside <code>layout.tsx</code>):
                     </p>
 
                     <div className="mt-2 rounded-lg font-mono text-sm overflow-x-auto">
                         <div>
-                        <SyntaxHighlighter
-                            language="html"
-                            style={systemTheme === 'dark' ? darcula : docco}
-                            customStyle={{
-                                padding: '12px',
-                                fontSize: '15px',
-                                borderRadius: '12px',
-                            }}
-                            wrapLongLines={true}
-                        >
-                            {code}
-                        </SyntaxHighlighter>
+                            <SyntaxHighlighter
+                                language="html"
+                                style={systemTheme === 'dark' ? darcula : docco}
+                                customStyle={{
+                                    padding: '12px',
+                                    fontSize: '15px',
+                                    borderRadius: '12px',
+                                }}
+                                wrapLongLines={true}
+                            >
+                                {code}
+                            </SyntaxHighlighter>
                         </div>
                     </div>
                 </li>

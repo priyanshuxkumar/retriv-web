@@ -14,9 +14,8 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco, darcula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useTheme } from 'next-themes';
 
-
 const code = ` <Script
-    src='https://retriv.in/agent-widget.js'
+    src='https://retriv.xyz/agent-widget.js'
     data-agent-id='111223334445555' // Your agent id
     data-api-key='rt_1234456789' // Your API Key
     data-name=example // Agent Name

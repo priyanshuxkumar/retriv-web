@@ -135,7 +135,7 @@ export default function Page() {
                     {/* Create API Key Button : its open the modal  */}
                     <Button
                         onClick={openCreateModal}
-                        disabled={apiKeys.length > 0} 
+                        disabled={apiKeys.length > 0}
                         className="bg-[#556B2F] hover:bg-[#4A5F25] text-white hover:text-white"
                     >
                         Create API Key

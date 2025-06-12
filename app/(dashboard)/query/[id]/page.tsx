@@ -48,7 +48,7 @@ const useFetchQueryDetails = (id: ParamValue) => {
 
     return {
         query: data,
-        isLoading
+        isLoading,
     };
 };
 
@@ -57,8 +57,8 @@ export default function Page() {
     const router = useRouter();
 
     const { query, isLoading } = useFetchQueryDetails(queryId);
-    if(!query) {
-        return <NoDataFound />
+    if (!query) {
+        return <NoDataFound />;
     }
 
     const agentResponse = JSON.parse(query?.metadata);

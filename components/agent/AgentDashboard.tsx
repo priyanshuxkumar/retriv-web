@@ -112,7 +112,9 @@ export default function AgentDashboard() {
                             {cardData.map((item, idx) => (
                                 <div key={idx} className="bg-white dark:bg-muted p-6 rounded-xl shadow-lg">
                                     <div className={`bg-${item.bgColor} p-2 rounded-lg w-fit mb-4`}>{item.icon}</div>
-                                    <h3 className="font-semibold text-slate-900 dark:text-white mb-2">{item.heading}</h3>
+                                    <h3 className="font-semibold text-slate-900 dark:text-white mb-2">
+                                        {item.heading}
+                                    </h3>
                                     <p className="text-slate-600 dark:text-white text-sm">{item.description}</p>
                                 </div>
                             ))}
@@ -135,7 +137,6 @@ export default function AgentDashboard() {
                                     <CreateAgentForm onSuccess={() => setIsDialogOpen(false)} />
                                 </DialogContent>
                             </Dialog>
-
                             <p className="text-sm text-slate-500 mt-4">
                                 Your agent will help visitors find information on your website more efficiently.
                             </p>

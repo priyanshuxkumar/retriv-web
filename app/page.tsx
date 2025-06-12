@@ -115,7 +115,7 @@ export default function Home() {
                                         {/* Sources */}
                                         <div className="ml-11">
                                             <div className="flex flex-wrap gap-2">
-                                                {['retriv.in'].map((item, idx) => (
+                                                {['retriv.xyz'].map((item, idx) => (
                                                     <Badge
                                                         key={idx}
                                                         variant="secondary"

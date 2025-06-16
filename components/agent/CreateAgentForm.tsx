@@ -1,7 +1,7 @@
 'use client';
 
 import { type FormEvent, useState } from 'react';
-import { Globe, Bot, Loader2, CheckCircle } from 'lucide-react';
+import { Globe, Bot, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -56,34 +56,46 @@ export function CreateAgentForm({ onSuccess }: CreateAgentFormProps) {
     };
 
     return (
-        <div className="max-w-md w-full">
-            <Card className="overflow-hidden pt-1 gap-2 bg-white dark:bg-muted border-none shadow-none">
-                <CardHeader className="pb-4 px-0">
-                    <CardDescription className="text-slate-500 px-0">
-                        Fill in the details below to create a custom AI agent for your website
-                    </CardDescription>
+        <div className="w-full">
+            <Card className="border-none shadow-none bg-transparent py-0">
+                <CardHeader className="pb-0 px-0 pt-0">
+                    <div className="flex items-center gap-3 mb-3">
+                        <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800">
+                            <Bot className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+                        </div>
+                        <div>
+                            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Create AI Agent</h2>
+                            <CardDescription className="text-slate-500 dark:text-slate-400 mt-0.5">
+                                Fill in the details below to create a custom AI agent for your website
+                            </CardDescription>
+                        </div>
+                    </div>
                 </CardHeader>
-                <CardContent className="px-0">
+
+                <CardContent className="px-0 pb-0">
                     {success && (
-                        <div className="mb-6 bg-green-50 border-green-200 text-green-800">
-                            <CheckCircle className="h-4 w-4 mr-2" />
-                            <div>Agent created successfully! Your website will be crawled automatically.</div>
+                        <div className="mb-6 p-4 rounded-lg bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800/50 flex items-start gap-3">
+                            <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                            <div className="text-sm text-green-800 dark:text-green-200">
+                                Agent created successfully! Your website will be crawled automatically.
+                            </div>
                         </div>
                     )}
 
                     {error && (
-                        <div className="mb-6 bg-red-50 border-red-200 text-red-800">
-                            <div>{error}</div>
+                        <div className="mb-6 p-4 rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/50 flex items-start gap-3">
+                            <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
+                            <div className="text-sm text-red-800 dark:text-red-200">{error}</div>
                         </div>
                     )}
 
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                             <Label htmlFor="name" className="text-sm font-medium text-slate-700 dark:text-white">
                                 Agent Name
                             </Label>
                             <div className="relative">
-                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-white">
+                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">
                                     <Bot className="h-5 w-5" />
                                 </div>
                                 <Input
@@ -93,20 +105,20 @@ export function CreateAgentForm({ onSuccess }: CreateAgentFormProps) {
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     required
-                                    className="pl-10 py-6 border-slate-200 focus:border-violet-500 focus:ring-violet-500"
+                                    className="pl-10 h-12 border-slate-200 dark:border-slate-700 focus:border-violet-500 dark:focus:border-violet-400 focus:ring-violet-500 dark:focus:ring-violet-400 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400"
                                 />
                             </div>
-                            <p className="text-xs text-slate-500 dark:text-neutral-300 mt-1">
+                            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                                 Choose a descriptive name for your AI assistant
                             </p>
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                             <Label htmlFor="source-url" className="text-sm font-medium text-slate-700 dark:text-white">
                                 Website URL
                             </Label>
                             <div className="relative">
-                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-white">
+                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">
                                     <Globe className="h-5 w-5" />
                                 </div>
                                 <Input
@@ -115,35 +127,44 @@ export function CreateAgentForm({ onSuccess }: CreateAgentFormProps) {
                                     value={sourceUrl}
                                     onChange={(e) => setSourceUrl(e.target.value)}
                                     required
-                                    className="pl-10 py-6 border-slate-200 focus:border-violet-500 focus:ring-violet-500"
+                                    type="url"
+                                    className="pl-10 h-12 border-slate-200 dark:border-slate-700 focus:border-violet-500 dark:focus:border-violet-400 focus:ring-violet-500 dark:focus:ring-violet-400 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400"
                                 />
                             </div>
-                            <p className="text-xs text-slate-500 dark:text-neutral-300 mt-1">
+                            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                                 We will automatically crawl this website to train your AI agent
                             </p>
                         </div>
 
-                        <Button
-                            type="submit"
-                            className="w-full py-6 bg-[#556B2F] hover:bg-[#4A5F25] text-white font-medium transition-all"
-                            disabled={isLoading}
-                        >
-                            {isLoading ? (
-                                <span className="flex items-center justify-center">
-                                    <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                                    Creating your agent...
-                                </span>
-                            ) : (
-                                'Create Agent'
-                            )}
-                        </Button>
+                        <div className="pt-2">
+                            <Button
+                                type="submit"
+                                className="w-full h-12 bg-[#556B2F] hover:bg-[#4A5F25] dark:bg-[#556B2F] dark:hover:bg-[#4A5F25] text-white font-medium transition-all duration-200 shadow-sm hover:shadow-md"
+                                disabled={isLoading}
+                            >
+                                {isLoading ? (
+                                    <span className="flex items-center justify-center gap-2">
+                                        <Loader2 className="h-5 w-5 animate-spin" />
+                                        Creating your agent...
+                                    </span>
+                                ) : (
+                                    <span className="flex items-center justify-center gap-2">
+                                        <Bot className="h-5 w-5" />
+                                        Create Agent
+                                    </span>
+                                )}
+                            </Button>
+                        </div>
                     </form>
                 </CardContent>
-                <CardFooter className="bg-slate-50 dark:bg-muted border-slate-100 px-6 py-4 mt-3">
-                    <p className="text-xs text-slate-500 text-center w-full">
-                        Your agent will be ready to answer questions about your website content after crawling is
-                        complete
-                    </p>
+
+                <CardFooter className="border-t border-slate-100 dark:border-slate-700 px-4 py-4 mt-6 mx-0">
+                    <div className="w-full text-center">
+                        <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                            Your agent will be ready to answer questions about your website content after crawling is
+                            complete
+                        </p>
+                    </div>
                 </CardFooter>
             </Card>
         </div>

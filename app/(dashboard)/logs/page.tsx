@@ -19,7 +19,6 @@ export interface ApiKeyLogProps {
 }
 
 const useFetchApiKeyLogs = () => {
-    redirect('/agent');
     const [data, setData] = useState<ApiKeyLogProps[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -52,6 +51,7 @@ const useFetchApiKeyLogs = () => {
 };
 
 export default function Page() {
+    redirect('/agent');
     const { logs, isLoading } = useFetchApiKeyLogs();
     return (
         <div className="flex items-center justify-between mx-4 md:mx-26 md:mt-12">
@@ -79,7 +79,10 @@ export default function Page() {
                                 <TableRow>
                                     <TableCell colSpan={5}>
                                         <div className="flex justify-center items-center py-4">
-                                            <Loader color="white" strokeWidth="2" size="30" />
+                                            <Loader
+                                                size="30"
+                                                strokeWidth="2"
+                                            />
                                         </div>
                                     </TableCell>
                                 </TableRow>

@@ -66,7 +66,7 @@ export default function Page() {
         <>
             {isLoading ? (
                 <div className="fixed top-0 left-0 flex justify-center items-center w-screen h-screen">
-                    <Loader color="white" strokeWidth="2" size="30" />
+                    <Loader size="30" strokeWidth="2" />
                 </div>
             ) : (
                 <div className="pb-10">

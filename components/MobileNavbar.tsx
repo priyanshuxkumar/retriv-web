@@ -15,7 +15,7 @@ export default function MobileNavbar() {
         <>
             <div
                 aria-label="mobile-menu"
-                className="lg:hidden sticky top-0 bg-[#F9F6F0] flex justify-between px-4 py-4 border-b z-50"
+                className="lg:hidden sticky top-0 bg-[#F9F6F0] dark:bg-black flex justify-between px-4 py-4 border-b z-50"
             >
                 <div className={`flex justify-between px-2 ${alegreya.className}`}>
                     <span className="text-2xl font-semibold">Retriv</span>

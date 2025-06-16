@@ -6,11 +6,10 @@ import { Bot, Lock, Settings2, UserRoundSearch } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { alegreya } from './fonts/fonts';
 import { User, useUser } from '@/context/user.context';
-import AxiosInstance from '@/utils/axiosInstance';
-import { toast } from 'sonner';
 import UserProfile from './UserProfile';
+import { handleLogout } from '@/utils/user';
 
-const item = [
+export const item = [
     {
         icon: <Bot />,
         title: 'Agent',
@@ -36,27 +35,7 @@ const item = [
 export default function Sidebar() {
     const router = useRouter();
     const pathname = usePathname();
-
     const { user } = useUser();
-
-    const handleLogout = async () => {
-        try {
-            const response = await AxiosInstance.post(
-                '/api/v1/auth/logout',
-                {},
-                {
-                    withCredentials: true,
-                },
-            );
-            if (response.data.success === true) {
-                router.push('/login');
-                toast(response.data.message);
-            }
-        } catch (err: unknown) {
-            console.error(err);
-        }
-    };
-
     return (
         <>
             <nav className="mt-2 flex-1">
@@ -64,7 +43,7 @@ export default function Sidebar() {
                     <span className="text-2xl font-semibold">Retriv</span>
                 </div>
                 {/* <UserProfile /> */}
-                <UserProfile user={user as User} handleLogout={handleLogout} />
+                <UserProfile user={user as User} handleLogout={() => handleLogout(router)} />
                 <ul className="mt-8">
                     {item.map((item) => (
                         <li key={item.title}>

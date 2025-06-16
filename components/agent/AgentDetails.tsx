@@ -14,25 +14,63 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco, darcula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useTheme } from 'next-themes';
 
-const code = ` <Script
-    src='https://retriv.xyz/agent-widget.js'
-    data-agent-id='111223334445555' // Your agent id
-    data-api-key='rt_1234456789' // Your API Key
-    data-name=example // Agent Name
-    strategy='afterInteractive'
-    async
-  />
-`;
+interface IntegrationCodeProp {
+    title: string;
+    code: string;
+}
+
+const nextjsCode = `<!-- Place this inside your layout.tsx -->
+<Script
+  src='https://retriv.xyz/agent-widget.js'
+  data-agent-id='111223334445555'
+  data-api-key='rt_1234456789'
+  data-name='YourAgentName'
+  strategy='afterInteractive'
+  async
+/>`;
+
+const reactjsCode = `<!-- Place inside public/index.html -->
+<script
+  src="https://retriv.xyz/agent-widget.js"
+  data-agent-id="111223334445555"
+  data-api-key="rt_1234456789"
+  data-name="YourAgentName"
+  async
+></script>`;
+
+const javascriptCode = `<!-- Vanilla JS - Place before </body> tag -->
+<script
+  src="https://retriv.xyz/agent-widget.js"
+  data-agent-id="111223334445555"
+  data-api-key="rt_1234456789"
+  data-name="YourAgentName"
+  async
+></script>`;
+
+const integrationCode: IntegrationCodeProp[] = [
+    {
+        title: 'Next.js',
+        code: nextjsCode,
+    },
+    {
+        title: 'React.js',
+        code: reactjsCode,
+    },
+    {
+        title: 'Javascript',
+        code: javascriptCode,
+    },
+];
 
 export function AgentDetails({ agent }: { agent: AgentProps }) {
     const { systemTheme } = useTheme();
     const codeRef = useRef<HTMLDivElement | null>(null);
-    const [copied, setCopied] = useState(false);
+    const [copied, setCopied] = useState<number | null>(null);
 
-    const handleCopyCode = () => {
+    const handleCopyCode = (code: string, idx: number) => {
         if (codeRef.current) {
             navigator.clipboard.writeText(code).then(() => {
-                setCopied(true);
+                setCopied(idx);
             });
         }
     };
@@ -169,31 +207,37 @@ export function AgentDetails({ agent }: { agent: AgentProps }) {
                             <CardDescription>Add your agent to your website</CardDescription>
                         </CardHeader>
                         <CardContent className="bg-transparent">
-                            <div className="space-y-4 bg-transparent">
-                                <div className="rounded-md pt-4">
-                                    <h3 className="font-medium mb-2">Add this script to your website</h3>
-                                    <div
-                                        ref={codeRef}
-                                        className="bg-background rounded-xl font-mono text-sm overflow-x-auto"
-                                    >
-                                        <SyntaxHighlighter
-                                            language="javascript"
-                                            style={systemTheme === 'dark' ? darcula : docco}
-                                            customStyle={{
-                                                padding: '12px',
-                                                fontSize: '15px',
-                                                borderRadius: '12px',
-                                            }}
-                                            wrapLongLines={true}
+                            <h3 className="text-xl font-medium mb-2">Add this script to your website</h3>
+                            {integrationCode.map((item: IntegrationCodeProp, idx: number) => (
+                                <div key={idx} className="mb-5 bg-transparent">
+                                    <div className="rounded-md pt-4">
+                                        <div
+                                            ref={codeRef}
+                                            className="bg-background rounded-xl font-mono text-sm overflow-x-auto"
                                         >
-                                            {code}
-                                        </SyntaxHighlighter>
+                                            <SyntaxHighlighter
+                                                language="javascript"
+                                                style={systemTheme === 'dark' ? darcula : docco}
+                                                customStyle={{
+                                                    padding: '12px',
+                                                    fontSize: '15px',
+                                                    borderRadius: '12px',
+                                                }}
+                                                wrapLongLines={true}
+                                            >
+                                                {item.code}
+                                            </SyntaxHighlighter>
+                                        </div>
+                                        <Button
+                                            onClick={() => handleCopyCode(item.code, idx)}
+                                            variant="outline"
+                                            className="w-full mt-4"
+                                        >
+                                            {copied === idx ? 'Copied!' : 'Copy'}
+                                        </Button>
                                     </div>
-                                    <Button onClick={handleCopyCode} variant="outline" size="sm" className="mt-4">
-                                        {copied ? 'Copied!' : 'Copy'}
-                                    </Button>
                                 </div>
-                            </div>
+                            ))}
                         </CardContent>
                     </Card>
                 </TabsContent>

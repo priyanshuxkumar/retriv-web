@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
 const AxiosInstance = axios.create({
-    baseURL: 'http://localhost:8080',
+    baseURL: process.env.NEXT_PUBLIC_SERVER_URL!,
 });
 
 AxiosInstance.interceptors.response.use(
@@ -9,11 +9,7 @@ AxiosInstance.interceptors.response.use(
         return response;
     },
     (error: AxiosError) => {
-        return error;
-        // if (error.response && error.response.data) {
-        //     return Promise.reject(error.response.data as ApiErrorResponse);
-        // }
-        // return Promise.reject(error);
+        return Promise.reject(error);
     },
 );
 

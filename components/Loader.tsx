@@ -1,7 +1,7 @@
 'use client';
 
-import { getLocalStorage } from '@/helper/storage';
 import { LoaderCircle } from 'lucide-react';
+import { getLocalStorage } from '@/lib/storage';
 
 interface LoaderProp {
     strokeWidth: string;

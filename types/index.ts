@@ -14,7 +14,7 @@ const PasswordSchema = z
 
 export const SigninFormSchema = z.object({
     email: EmailSchema,
-    password: PasswordSchema,
+    password: z.string().nonempty(),
 });
 
 export const SignupFormSchema = z.object({

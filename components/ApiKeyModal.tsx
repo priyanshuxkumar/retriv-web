@@ -35,7 +35,7 @@ export const CreateAndUpdateApiKeyModal: React.FC<ApiKeyModalProps> = ({
                             type="text"
                             placeholder="Enter name of API"
                         />
-                        <Button className="mt-5" onClick={handleSubmit}>
+                        <Button className="mt-5" onClick={handleSubmit} disabled={!name}>
                             {mode === 'create' ? 'Create' : 'Edit'} key
                         </Button>
                     </DialogDescription>

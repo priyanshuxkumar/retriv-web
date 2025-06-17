@@ -15,8 +15,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { useTheme } from 'next-themes';
 import { ChevronDown, LogOut, Moon, Sun, Laptop, SunDim, UserCircle } from 'lucide-react';
 import { User } from '@/context/user.context';
-import { useEffect } from 'react';
-import { getLocalStorage, setLocalStorage } from '@/helper/storage';
 
 interface UserProfileProps {
     user: User;
@@ -25,17 +23,7 @@ interface UserProfileProps {
 
 export default function UserProfile({ user, handleLogout }: UserProfileProps) {
     const router = useRouter();
-    const { theme, systemTheme, setTheme } = useTheme();
-
-    useEffect(() => {
-        if (typeof window !== undefined) {
-            const selectedTheme = theme === 'system' ? systemTheme : theme;
-            const isCurrentThemeDark = getLocalStorage('isDarkTheme');
-            if (!isCurrentThemeDark && systemTheme) {
-                setLocalStorage('isDarkTheme', selectedTheme === 'dark');
-            }
-        }
-    }, [systemTheme, theme]);
+    const { setTheme } = useTheme();
 
     if (!user) {
         return (

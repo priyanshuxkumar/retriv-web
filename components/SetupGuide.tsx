@@ -1,6 +1,6 @@
 'use client';
 
-import { useTheme } from 'next-themes';
+import { getLocalStorage } from '@/lib/storage';
 import { useEffect, useState } from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { darcula, docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
@@ -14,7 +14,7 @@ const code = `<Script
 />`;
 
 export default function SetupGuide() {
-    const { systemTheme } = useTheme();
+    const isCurrentThemeDark = getLocalStorage('isDarkTheme');
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -49,7 +49,7 @@ export default function SetupGuide() {
                         <div>
                             <SyntaxHighlighter
                                 language="html"
-                                style={systemTheme === 'dark' ? darcula : docco}
+                                style={isCurrentThemeDark ? darcula : docco}
                                 customStyle={{
                                     padding: '12px',
                                     fontSize: '15px',

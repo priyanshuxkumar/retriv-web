@@ -9,9 +9,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { timeAgo } from '@/helper/time';
-import { Copy, Eye, Loader } from 'lucide-react';
+import { Copy, Eye } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
+import { AxiosError } from 'axios';
+import Loader from '@/components/Loader';
 
 interface ApiDataProp {
     id: string;
@@ -39,7 +41,21 @@ const useFetchApiKeys = () => {
                     setApiKeys(response.data.data);
                 }
             } catch (err: unknown) {
-                console.error(err);
+                const error = err as AxiosError;
+
+                if (error.response) {
+                    toast.error('Failed to fetch API keys', {
+                        description: (error.response.data as AxiosError)?.message || 'An error occurred',
+                    });
+                } else if (error.request) {
+                    toast.error('Network error', {
+                        description: 'No response from server. Please check your connection.',
+                    });
+                } else {
+                    toast.error('Unexpected error', {
+                        description: error.message,
+                    });
+                }
             } finally {
                 setIsLoading(false);
             }
@@ -78,6 +94,7 @@ export default function Page() {
 
     /** Function for create the API Key */
     const handleCreateApiKey = async (name: string) => {
+        if (!apiKey) return;
         try {
             const response = await AxiosInstance.post(
                 '/api/v1/apikey',
@@ -101,7 +118,21 @@ export default function Page() {
                 setApiKeyViewDialogOpen(!apiKeyViewDialogOpen);
             }
         } catch (err) {
-            console.error(err);
+            const error = err as AxiosError;
+
+            if (error.response) {
+                toast.error('Failed to create API key', {
+                    description: (error.response.data as AxiosError)?.message || 'An error occurred',
+                });
+            } else if (error.request) {
+                toast.error('Network error', {
+                    description: 'No response from server. Please check your connection.',
+                });
+            } else {
+                toast.error('Unexpected error', {
+                    description: error.message,
+                });
+            }
         }
     };
 
@@ -194,10 +225,7 @@ export default function Page() {
                             <TableRow>
                                 <TableCell colSpan={5}>
                                     <div className="flex justify-center items-center py-4">
-                                        <Loader
-                                            size="30"
-                                            strokeWidth="2"
-                                        />
+                                        <Loader size="30" strokeWidth="2" />
                                     </div>
                                 </TableCell>
                             </TableRow>

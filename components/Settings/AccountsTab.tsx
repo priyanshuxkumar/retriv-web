@@ -17,6 +17,8 @@ import { Label } from '../ui/label';
 import { Separator } from '../ui/separator';
 import { useUser } from '@/context/user.context';
 import AxiosInstance from '@/utils/axiosInstance';
+import { AxiosError } from 'axios';
+import { toast } from 'sonner';
 
 export default function SettingsAccountsTab() {
     const { user } = useUser();
@@ -30,7 +32,21 @@ export default function SettingsAccountsTab() {
                 console.log('Deleted successfull');
             }
         } catch (err: unknown) {
-            console.error(err);
+            const error = err as AxiosError;
+
+            if (error.response) {
+                toast.error('Failed to delete Agent', {
+                    description: (error.response.data as AxiosError)?.message || 'An error occurred',
+                });
+            } else if (error.request) {
+                toast.error('Network error', {
+                    description: 'No response from server. Please check your connection.',
+                });
+            } else {
+                toast.error('Unexpected error', {
+                    description: error.message,
+                });
+            }
         }
     };
     return (

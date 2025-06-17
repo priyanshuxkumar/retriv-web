@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import AxiosInstance from '@/utils/axiosInstance';
 import { Check } from 'lucide-react';
 import { Separator } from '../ui/separator';
+import { AxiosError } from 'axios';
+import { toast } from 'sonner';
 
 export interface PlanProps {
     id: string;
@@ -42,6 +44,21 @@ const useFetchUserActivePlan = () => {
                 }
             } catch (err: unknown) {
                 console.error(err);
+                const error = err as AxiosError;
+
+                if (error.response) {
+                    toast.error('Failed to fetch active plan details', {
+                        description: (error.response.data as AxiosError)?.message || 'An error occurred',
+                    });
+                } else if (error.request) {
+                    toast.error('Network error', {
+                        description: 'No response from server. Please check your connection.',
+                    });
+                } else {
+                    toast.error('Unexpected error', {
+                        description: error.message,
+                    });
+                }
             } finally {
                 setLoading(false);
             }
@@ -70,7 +87,7 @@ export default function SettingsBillingTab() {
         fecthPlans();
     }, []);
     return (
-        <div className="my-8 flex flex-col gap-5">
+        <div className="my-8 flex flex-col gap-5 px-4">
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {plans.map((plan) => (
                     <Card key={plan.id}>

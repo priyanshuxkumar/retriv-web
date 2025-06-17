@@ -8,6 +8,8 @@ import { ArrowRight, Bot, Globe, Sparkles } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import Loader from '../Loader';
+import { AxiosError } from 'axios';
+import { toast } from 'sonner';
 
 export interface AgentProps {
     id: string;
@@ -69,7 +71,21 @@ const useGetAgent = (): { agent: AgentProps | undefined; loading: boolean } => {
                     setData(response.data.data);
                 }
             } catch (err) {
-                console.error(err);
+                const error = err as AxiosError;
+
+                if (error.response) {
+                    toast.error('Failed to fetch Agent data', {
+                        description: (error.response.data as AxiosError)?.message || 'An error occurred',
+                    });
+                } else if (error.request) {
+                    toast.error('Network error', {
+                        description: 'No response from server. Please check your connection.',
+                    });
+                } else {
+                    toast.error('Unexpected error', {
+                        description: error.message,
+                    });
+                }
             } finally {
                 setIsLoading(false);
             }

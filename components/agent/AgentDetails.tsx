@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco, darcula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import { useTheme } from 'next-themes';
+import { getLocalStorage } from '@/lib/storage';
 
 interface IntegrationCodeProp {
     title: string;
@@ -63,7 +63,7 @@ const integrationCode: IntegrationCodeProp[] = [
 ];
 
 export function AgentDetails({ agent }: { agent: AgentProps }) {
-    const { systemTheme } = useTheme();
+    const isCurrentThemeDark = getLocalStorage('isDarkTheme');
     const codeRef = useRef<HTMLDivElement | null>(null);
     const [copied, setCopied] = useState<number | null>(null);
 
@@ -217,7 +217,7 @@ export function AgentDetails({ agent }: { agent: AgentProps }) {
                                         >
                                             <SyntaxHighlighter
                                                 language="javascript"
-                                                style={systemTheme === 'dark' ? darcula : docco}
+                                                style={isCurrentThemeDark ? darcula : docco}
                                                 customStyle={{
                                                     padding: '12px',
                                                     fontSize: '15px',

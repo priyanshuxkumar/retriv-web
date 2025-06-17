@@ -1,12 +1,14 @@
 'use client';
 
 import { type FormEvent, useState } from 'react';
-import { Globe, Bot, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Globe, Bot, Loader2, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@/components/ui/card';
 import AxiosInstance from '@/utils/axiosInstance';
+import { AxiosError } from 'axios';
+import { toast } from 'sonner';
 
 interface CreateAgentFormProps {
     onSuccess?: () => void;
@@ -17,12 +19,10 @@ export function CreateAgentForm({ onSuccess }: CreateAgentFormProps) {
     const [name, setName] = useState<string>('');
     const [sourceUrl, setSourceUrl] = useState<string>('');
     const [success, setSuccess] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
-        setError(null);
         setSuccess(false);
         try {
             const response = await AxiosInstance.post(
@@ -49,7 +49,21 @@ export function CreateAgentForm({ onSuccess }: CreateAgentFormProps) {
                 }
             }
         } catch (err: unknown) {
-            console.error(err);
+            const error = err as AxiosError;
+
+            if (error.response) {
+                toast.error('Failed to create agent', {
+                    description: (error.response.data as AxiosError)?.message || 'An error occurred',
+                });
+            } else if (error.request) {
+                toast.error('Network error', {
+                    description: 'No response from server. Please check your connection.',
+                });
+            } else {
+                toast.error('Unexpected error', {
+                    description: error.message,
+                });
+            }
         } finally {
             setIsLoading(false);
         }
@@ -79,13 +93,6 @@ export function CreateAgentForm({ onSuccess }: CreateAgentFormProps) {
                             <div className="text-sm text-green-800 dark:text-green-200">
                                 Agent created successfully! Your website will be crawled automatically.
                             </div>
-                        </div>
-                    )}
-
-                    {error && (
-                        <div className="mb-6 p-4 rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/50 flex items-start gap-3">
-                            <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
-                            <div className="text-sm text-red-800 dark:text-red-200">{error}</div>
                         </div>
                     )}
 

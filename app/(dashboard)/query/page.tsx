@@ -1,6 +1,5 @@
 'use client';
 
-import { Loader } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useEffect, useState } from 'react';
 import AxiosInstance from '@/utils/axiosInstance';
@@ -8,6 +7,9 @@ import { timeAgo } from '@/helper/time';
 import { useUser } from '@/context/user.context';
 import NoDataFound from '@/components/NoDataFound';
 import Link from 'next/link';
+import Loader from '@/components/Loader';
+import { AxiosError } from 'axios';
+import { toast } from 'sonner';
 
 interface QueryProp {
     id: string;
@@ -34,7 +36,21 @@ const useFetchQueries = (agentId: string) => {
                     setData(response.data.data);
                 }
             } catch (err: unknown) {
-                console.error(err);
+                const error = err as AxiosError;
+
+                if (error.response) {
+                    toast.error('Failed to fetch queries', {
+                        description: (error.response.data as AxiosError)?.message || 'An error occurred',
+                    });
+                } else if (error.request) {
+                    toast.error('Network error', {
+                        description: 'No response from server. Please check your connection.',
+                    });
+                } else {
+                    toast.error('Unexpected error', {
+                        description: error.message,
+                    });
+                }
             } finally {
                 setIsLoading(false);
             }
@@ -77,10 +93,7 @@ export default function Page() {
                                 <TableRow>
                                     <TableCell colSpan={5}>
                                         <div className="flex justify-center items-center py-4">
-                                            <Loader
-                                                size="30"
-                                                strokeWidth="2"
-                                            />
+                                            <Loader size="30" strokeWidth="2" />
                                         </div>
                                     </TableCell>
                                 </TableRow>

@@ -12,9 +12,11 @@ import { ScrollArea } from '../ui/scroll-area';
 import SkeletonBar from '../Skeleton/skeleton';
 import { MarkdownRenderer } from '../Markdown';
 import Link from 'next/link';
-import { getSessionStorage, setSessionStorage } from '@/helper/storage';
+import { getSessionStorage, setSessionStorage } from '@/lib/storage';
 import { inter } from '../fonts/fonts';
 import { Textarea } from '../ui/textarea';
+import { AxiosError } from 'axios';
+import { toast } from 'sonner';
 
 interface Message {
     content: string;
@@ -185,7 +187,21 @@ export default function ChatInterfaceAgent({ agentName, agentId, apiKey, isOpen,
                 }
             }
         } catch (err: unknown) {
-            console.error(err);
+            const error = err as AxiosError;
+
+            if (error.response) {
+                toast.error('Something went wrong', {
+                    description: (error.response.data as AxiosError)?.message || 'An error occurred',
+                });
+            } else if (error.request) {
+                toast.error('Network error', {
+                    description: 'No response from server. Please check your connection.',
+                });
+            } else {
+                toast.error('Unexpected error', {
+                    description: error.message,
+                });
+            }
         } finally {
             setIsStreaming(false);
             setIsLoading(false);

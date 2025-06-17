@@ -15,6 +15,7 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { SigninFormSchema } from '@/types';
 import GoogleLoginButton from './GoogleLogin';
+import { AxiosError } from 'axios';
 
 export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
     const router = useRouter();
@@ -44,12 +45,26 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
             );
             if (response.data.success === true) {
                 toast.success('Login Successful', {
-                    description: 'Redirecting to emails...',
+                    description: 'Redirecting to agents...',
                 });
                 router.push('/agent');
             }
         } catch (err: unknown) {
-            console.error(err);
+            const error = err as AxiosError;
+
+            if (error.response) {
+                toast.error('Login failed', {
+                    description: (error.response.data as AxiosError)?.message || 'An error occurred',
+                });
+            } else if (error.request) {
+                toast.error('Network error', {
+                    description: 'No response from server. Please check your connection.',
+                });
+            } else {
+                toast.error('Unexpected error', {
+                    description: error.message,
+                });
+            }
         } finally {
             setIsSubmitting(false);
         }

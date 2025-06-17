@@ -17,6 +17,8 @@ import { ParamValue } from 'next/dist/server/request/params';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { PhoneInput } from '../PhoneInput';
+import { AxiosError } from 'axios';
+import { toast } from 'sonner';
 
 declare global {
     interface Window {
@@ -43,7 +45,21 @@ const useFetchPlanDetails = (id: ParamValue) => {
                     setAmount(response.data.data.amount);
                 }
             } catch (err: unknown) {
-                console.error(err);
+                const error = err as AxiosError;
+
+                if (error.response) {
+                    toast.error('Failed to fetch plans', {
+                        description: (error.response.data as AxiosError)?.message || 'An error occurred',
+                    });
+                } else if (error.request) {
+                    toast.error('Network error', {
+                        description: 'No response from server. Please check your connection.',
+                    });
+                } else {
+                    toast.error('Unexpected error', {
+                        description: error.message,
+                    });
+                }
             }
         };
         fetchData();
@@ -129,7 +145,21 @@ export default function PaymentForm() {
                 alert('Payment failed. Please try again. Error: ' + response.error.description);
             });
         } catch (err: unknown) {
-            console.error(err);
+            const error = err as AxiosError;
+
+            if (error.response) {
+                toast.error('Failed to payment of subscription', {
+                    description: (error.response.data as AxiosError)?.message || 'An error occurred',
+                });
+            } else if (error.request) {
+                toast.error('Network error', {
+                    description: 'No response from server. Please check your connection.',
+                });
+            } else {
+                toast.error('Unexpected error', {
+                    description: error.message,
+                });
+            }
         } finally {
             setIsPaymentHappening(false);
         }

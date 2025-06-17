@@ -14,6 +14,7 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { SignupFormSchema } from '@/types';
 import GoogleLoginButton from './GoogleLogin';
+import { AxiosError } from 'axios';
 
 export function SignupForm() {
     const router = useRouter();
@@ -44,13 +45,27 @@ export function SignupForm() {
                 },
             );
             if (response.data.success === true) {
-                toast.success('Login Successful', {
-                    description: 'Redirecting to emails...',
+                toast.success('Signup Successful', {
+                    description: 'Redirecting to agents...',
                 });
                 router.push('/agent');
             }
         } catch (err: unknown) {
-            console.error(err);
+            const error = err as AxiosError;
+
+            if (error.response) {
+                toast.error('Signup failed', {
+                    description: (error.response.data as AxiosError)?.message || 'An error occurred',
+                });
+            } else if (error.request) {
+                toast.error('Network error', {
+                    description: 'No response from server. Please check your connection.',
+                });
+            } else {
+                toast.error('Unexpected error', {
+                    description: error.message,
+                });
+            }
         } finally {
             setIsSubmitting(false);
         }
@@ -134,7 +149,7 @@ export function SignupForm() {
                         {/* Submit Button */}
                         <Button
                             type="submit"
-                            className="w-full h-10 text-base bg-[#556B2F] hover:bg-[#4A5F25] focus:ring-2 focus:ring-offset-2 focus:ring-[#556B2F]"
+                            className="w-full h-10 text-base bg-[#556B2F] hover:bg-[#4A5F25] dark:text-white focus:ring-2 focus:ring-offset-2 focus:ring-[#556B2F]"
                             disabled={isSubmitting}
                         >
                             {isSubmitting ? (

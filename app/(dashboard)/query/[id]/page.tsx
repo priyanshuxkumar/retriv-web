@@ -6,10 +6,12 @@ import NoDataFound from '@/components/NoDataFound';
 import { Badge } from '@/components/ui/badge';
 import { timeAgo } from '@/helper/time';
 import AxiosInstance from '@/utils/axiosInstance';
+import { AxiosError } from 'axios';
 import { ArrowLeft } from 'lucide-react';
 import { ParamValue } from 'next/dist/server/request/params';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface QueryDetailProp {
     id: string;
@@ -23,6 +25,7 @@ interface QueryDetailProp {
 const useFetchQueryDetails = (id: ParamValue) => {
     const [data, setData] = useState<QueryDetailProp>();
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
@@ -38,7 +41,21 @@ const useFetchQueryDetails = (id: ParamValue) => {
                     setData(response.data.data);
                 }
             } catch (err: unknown) {
-                console.error(err);
+                const error = err as AxiosError;
+
+                if (error.response) {
+                    toast.error('Failed to fetch query details', {
+                        description: (error.response.data as AxiosError)?.message || 'An error occurred',
+                    });
+                } else if (error.request) {
+                    toast.error('Network error', {
+                        description: 'No response from server. Please check your connection.',
+                    });
+                } else {
+                    toast.error('Unexpected error', {
+                        description: error.message,
+                    });
+                }
             } finally {
                 setIsLoading(false);
             }

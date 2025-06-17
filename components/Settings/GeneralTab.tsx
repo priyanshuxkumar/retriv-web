@@ -16,6 +16,7 @@ import { AgentSettingsSchema } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem } from '../ui/form';
 import { toast } from 'sonner';
+import { AxiosError } from 'axios';
 
 interface GeneralTabProps {
     basicInfo: {
@@ -50,6 +51,21 @@ const useFetchSettingsGeneralTab = () => {
                 }
             } catch (err) {
                 console.error(err);
+                const error = err as AxiosError;
+
+                if (error.response) {
+                    toast.error('Failed to fetch settings', {
+                        description: (error.response.data as AxiosError)?.message || 'An error occurred',
+                    });
+                } else if (error.request) {
+                    toast.error('Network error', {
+                        description: 'No response from server. Please check your connection.',
+                    });
+                } else {
+                    toast.error('Unexpected error', {
+                        description: error.message,
+                    });
+                }
             } finally {
                 setIsLoading(false);
             }
@@ -92,7 +108,21 @@ export default function SettingsGeneralTab() {
                 toast.success('Updated successfully');
             }
         } catch (err: unknown) {
-            console.error(err);
+            const error = err as AxiosError;
+
+            if (error.response) {
+                toast.error('Failed to update agent settings', {
+                    description: (error.response.data as AxiosError)?.message || 'An error occurred',
+                });
+            } else if (error.request) {
+                toast.error('Network error', {
+                    description: 'No response from server. Please check your connection.',
+                });
+            } else {
+                toast.error('Unexpected error', {
+                    description: error.message,
+                });
+            }
         }
     }
 
@@ -112,7 +142,21 @@ export default function SettingsGeneralTab() {
                 toast.success('Reset successfully');
             }
         } catch (err: unknown) {
-            console.error(err);
+            const error = err as AxiosError;
+
+            if (error.response) {
+                toast.error('Failed to reset settings', {
+                    description: (error.response.data as AxiosError)?.message || 'An error occurred',
+                });
+            } else if (error.request) {
+                toast.error('Network error', {
+                    description: 'No response from server. Please check your connection.',
+                });
+            } else {
+                toast.error('Unexpected error', {
+                    description: error.message,
+                });
+            }
         }
     };
     

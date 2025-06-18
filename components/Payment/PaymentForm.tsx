@@ -12,9 +12,8 @@ import { z } from 'zod';
 import { PaymentFormSchema } from '@/types';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
 import Script from 'next/script';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { ParamValue } from 'next/dist/server/request/params';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { PhoneInput } from '../PhoneInput';
 import { AxiosError } from 'axios';
@@ -27,13 +26,13 @@ declare global {
 }
 
 interface RazorpayResponse {
-    razorpay_order_id: string;
-    razorpay_payment_id: string;
     razorpay_signature: string;
+    razorpay_payment_id: string;
+    razorpay_subscription_id: string;
 }
 
 const useFetchPlanDetails = (id: ParamValue) => {
-    const [amount, setAmount] = useState<number | null>(10);
+    const [amount, setAmount] = useState<number | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -41,14 +40,14 @@ const useFetchPlanDetails = (id: ParamValue) => {
                 const response = await AxiosInstance.get(`/api/v1/plans/${id}`, {
                     withCredentials: true,
                 });
-                if (response.data.success == true) {
+                if (response.data.success === true) {
                     setAmount(response.data.data.amount);
                 }
             } catch (err: unknown) {
                 const error = err as AxiosError;
 
                 if (error.response) {
-                    toast.error('Failed to fetch plans', {
+                    toast.error('Failed to fetch plan details', {
                         description: (error.response.data as AxiosError)?.message || 'An error occurred',
                     });
                 } else if (error.request) {
@@ -65,7 +64,7 @@ const useFetchPlanDetails = (id: ParamValue) => {
         fetchData();
     }, [id]);
     return {
-        amount,
+        amount
     };
 };
 
@@ -86,20 +85,19 @@ export default function PaymentForm() {
     });
     const termsAccepted = form.watch('terms');
 
-    const handleCreateOrder = async () => {
+    const handleCreateSubscription = async () => {
         try {
             const response = await AxiosInstance.post(
-                '/api/payment/checkout',
+                '/api/payment/subscribe',
                 {
                     planId: id,
-                    currency: 'INR',
                 },
                 {
                     withCredentials: true,
                 },
             );
             if (response.data.success == true) {
-                return response.data.data.order_id;
+                return response.data.data.subscriptionId;
             }
         } catch (err: unknown) {
             throw err;
@@ -108,7 +106,7 @@ export default function PaymentForm() {
 
     async function onSubmit(values: z.infer<typeof PaymentFormSchema>) {
         setIsPaymentHappening(true);
-        const orderId = await handleCreateOrder();
+        const subscriptionId = await handleCreateSubscription();
         try {
             if (!window.Razorpay) {
                 alert('Razorpay SDK failed to load. Please check your internet connection.');
@@ -120,8 +118,8 @@ export default function PaymentForm() {
                 amount: amount,
                 currency: 'INR',
                 name: 'Retriv',
-                description: 'Payment for subscription',
-                order_id: orderId,
+                description: 'Payment for pro subscription',
+                subscription_id: subscriptionId,
                 handler: async function (response: RazorpayResponse) {
                     handlePaymentSuccess(response);
                 },
@@ -168,9 +166,9 @@ export default function PaymentForm() {
     const handlePaymentSuccess = async (response: RazorpayResponse) => {
         try {
             const verificationResponse = await AxiosInstance.post(
-                '/api/payment/verify',
+                '/api/payment/payment-verification',
                 {
-                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_subscription_id: response.razorpay_subscription_id,
                     razorpay_payment_id: response.razorpay_payment_id,
                     razorpay_signature: response.razorpay_signature,
                 },
@@ -182,14 +180,27 @@ export default function PaymentForm() {
                 },
             );
             if (verificationResponse.data.success) {
-                alert('Payment successful');
+                toast.success(verificationResponse.data.message);
                 router.push('/settings');
             } else {
                 alert('Payment verification failed');
             }
-        } catch (error) {
-            console.error('Error verifying payment:', error);
-            alert('Error verifying payment');
+        } catch (err: unknown) {
+            const error = err as AxiosError;
+
+            if (error.response) {
+                toast.error('Failed to verify payment. If the payment is done contact the support.', {
+                    description: (error.response.data as AxiosError)?.message || 'An error occurred',
+                });
+            } else if (error.request) {
+                toast.error('Network error', {
+                    description: 'No response from server. Please check your connection.',
+                });
+            } else {
+                toast.error('Unexpected error', {
+                    description: error.message,
+                });
+            }
         }
     };
     return (

@@ -12,21 +12,21 @@ export default function Page() {
                     </button>
                     <h2 className="text-xl font-medium">Subscribe to Retriv Pro</h2>
                     <div className="mt-4 flex items-baseline">
-                        <span className="text-4xl font-bold">₹ 2,999.00</span>
+                        <span className="text-4xl font-bold">₹ 1,499.00</span>
                         <span className="ml-2 text-sm text-zinc-400">per month</span>
                     </div>
 
                     <div className="mt-8 space-y-4 border-b border-zinc-800 pb-8">
                         <div className="flex justify-between">
                             <span>Retriv Pro</span>
-                            <span>₹ 2,999.00</span>
+                            <span>₹ 1,499.00</span>
                         </div>
                         <div className="text-sm text-zinc-400">Billed monthly</div>
                     </div>
 
                     <div className="mt-4 flex justify-between font-medium">
                         <span>Subtotal</span>
-                        <span>₹ 2,999.00</span>
+                        <span>₹ 1,499.00</span>
                     </div>
                 </div>
             </div>

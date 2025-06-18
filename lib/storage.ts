@@ -33,4 +33,15 @@ function getLocalStorage<T>(key: string): T | null {
     }
     return null;
 }
-export { setSessionStorage, getSessionStorage, getLocalStorage, setLocalStorage };
+
+function resetLocalStorage(key: string): void {
+    if (typeof window === 'undefined') return;
+
+    try {
+        localStorage.removeItem(key);
+    } catch (error) {
+        console.error(`Error removing localStorage key "${key}":`, error);
+    }
+}
+
+export { setSessionStorage, getSessionStorage, getLocalStorage, setLocalStorage, resetLocalStorage };

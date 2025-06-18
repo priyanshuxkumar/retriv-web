@@ -159,7 +159,7 @@ export default function SettingsGeneralTab() {
             }
         }
     };
-    
+
     if (isLoading && !generalSettings) {
         return (
             <div className="flex h-90 justify-center items-center">
@@ -187,7 +187,7 @@ export default function SettingsGeneralTab() {
                         </div>
                         <div className="space-y-2">
                             <Label className="text-sm font-medium text-muted-foreground">Agent LLM</Label>
-                            <p className="font-medium">GPT-4o</p>
+                            <p className="font-medium">Open AI | Gemini</p>
                         </div>
                         <div className="space-y-2">
                             <Label className="text-sm font-medium text-muted-foreground">Source URL</Label>

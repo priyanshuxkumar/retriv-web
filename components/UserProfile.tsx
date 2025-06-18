@@ -1,5 +1,5 @@
 'use client';
-import { useRouter } from 'next/navigation';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,8 +13,20 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useTheme } from 'next-themes';
-import { ChevronDown, LogOut, Moon, Sun, Laptop, SunDim, UserCircle } from 'lucide-react';
+import {
+    ChevronDown,
+    LogOut,
+    Moon,
+    Sun,
+    Laptop,
+    UserCircle,
+    FileText,
+    Shield,
+    SunMoon,
+    CircleDollarSign,
+} from 'lucide-react';
 import { User } from '@/context/user.context';
+import Link from 'next/link';
 
 interface UserProfileProps {
     user: User;
@@ -22,7 +34,6 @@ interface UserProfileProps {
 }
 
 export default function UserProfile({ user, handleLogout }: UserProfileProps) {
-    const router = useRouter();
     const { setTheme } = useTheme();
 
     if (!user) {
@@ -63,12 +74,32 @@ export default function UserProfile({ user, handleLogout }: UserProfileProps) {
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem onClick={() => router.push('/profile')}>
-                                <UserCircle className="mr-2 h-4 w-4" />
-                                <span>Profile</span>
+                            <DropdownMenuItem>
+                                <Link href="/profile" className="w-full flex items-center gap-2">
+                                    <UserCircle className="mr-2 h-4 w-4" />
+                                    <span>Profile</span>
+                                </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem>
-                                <SunDim className="mr-2 h-4 w-4" />
+                                <Link href="/legal/terms-of-services" className="w-full flex items-center gap-2">
+                                    <FileText className="mr-2 h-4 w-4" />
+                                    <span>Terms</span>
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <Link href="/legal/privacy-policy" className="w-full flex items-center gap-2">
+                                    <Shield className="mr-2 h-4 w-4" />
+                                    <span>Privacy</span>
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <Link href="/pricing" className="w-full flex items-center gap-2">
+                                    <CircleDollarSign className="mr-2 h-4 w-4" />
+                                    <span>Pricing</span>
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <SunMoon className="mr-2 h-4 w-4" />
                                 <span>Theme</span>
                                 <TooltipProvider delayDuration={300}>
                                     <div className="flex items-center rounded-2xl border bg-background">

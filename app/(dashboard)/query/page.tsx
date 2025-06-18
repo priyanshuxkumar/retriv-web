@@ -10,6 +10,7 @@ import Link from 'next/link';
 import Loader from '@/components/Loader';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
+import BuySubscription from '@/components/BuySubscription';
 
 interface QueryProp {
     id: string;
@@ -21,6 +22,7 @@ interface QueryProp {
 const useFetchQueries = (agentId: string) => {
     const [data, setData] = useState<QueryProp[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [userHasSubscription, setUserHasSubscription] = useState<boolean | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -33,7 +35,9 @@ const useFetchQueries = (agentId: string) => {
                     },
                 });
                 if (response.data.success === true) {
-                    setData(response.data.data);
+                    setData(response.data.data || []);
+                } else if (response.data.success === false) {
+                    setUserHasSubscription(false);
                 }
             } catch (err: unknown) {
                 const error = err as AxiosError;
@@ -60,15 +64,15 @@ const useFetchQueries = (agentId: string) => {
     }, [agentId]);
 
     return {
-        query: data,
+        queries: data,
         isLoading,
+        userHasSubscription,
     };
 };
 
 export default function Page() {
     const { user } = useUser();
-    const { query, isLoading } = useFetchQueries(user?.userMetadata.agentId as string);
-
+    const { queries, isLoading, userHasSubscription } = useFetchQueries(user?.userMetadata.agentId as string);
     return (
         <div className="flex items-center justify-between mx-4 md:mx-26 md:mt-12">
             <div className="w-full">
@@ -98,8 +102,8 @@ export default function Page() {
                                     </TableCell>
                                 </TableRow>
                             ) : (
-                                query.length > 0 &&
-                                query.map((item: QueryProp) => (
+                                queries.length > 0 &&
+                                queries.map((item: QueryProp) => (
                                     <TableRow key={item.id} className="text-base hover:bg-transparent cursor-pointer">
                                         <TableCell className="underline decoration-dashed text-ellipsis pr-8 py-4 truncate">
                                             <Link href={`/query/${item.id}`}>
@@ -113,8 +117,12 @@ export default function Page() {
                             )}
                         </TableBody>
                     </Table>
-                    {/* No query found component  */}
-                    {query.length == 0 && <NoDataFound />}
+
+                    {/* No Subcription */}
+                    {!isLoading && !userHasSubscription && <BuySubscription />}
+
+                    {/* No query found component  (Subscription Buy) */}
+                    {!isLoading && userHasSubscription && queries.length === 0 && <NoDataFound />}
                 </div>
             </div>
         </div>

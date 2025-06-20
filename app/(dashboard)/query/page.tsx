@@ -9,7 +9,6 @@ import NoDataFound from '@/components/NoDataFound';
 import Link from 'next/link';
 import Loader from '@/components/Loader';
 import { AxiosError } from 'axios';
-import { toast } from 'sonner';
 import BuySubscription from '@/components/BuySubscription';
 
 interface QueryProp {
@@ -21,12 +20,12 @@ interface QueryProp {
 
 const useFetchQueries = (agentId: string) => {
     const [data, setData] = useState<QueryProp[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [userHasSubscription, setUserHasSubscription] = useState<boolean | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [userHasSubscription, setUserHasSubscription] = useState<null | boolean>(null);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
-            setIsLoading(true);
             try {
                 const response = await AxiosInstance.get(`/api/v1/agent/queries/${agentId}`, {
                     withCredentials: true,
@@ -36,24 +35,26 @@ const useFetchQueries = (agentId: string) => {
                 });
                 if (response.data.success === true) {
                     setData(response.data.data || []);
-                } else if (response.data.success === false) {
-                    setUserHasSubscription(false);
+                    setUserHasSubscription(true);
                 }
             } catch (err: unknown) {
                 const error = err as AxiosError;
 
-                if (error.response) {
-                    toast.error('Failed to fetch queries', {
-                        description: (error.response.data as AxiosError)?.message || 'An error occurred',
-                    });
+                const statusCode = error.response?.status;
+                const errMsg = (error.response?.data as AxiosError)?.message || 'Something went wrong';
+
+                if (statusCode === 402) {
+                    // Payment required for subscription
+                    setUserHasSubscription(false);
+                    return;
+                }
+
+                if (error.response || statusCode === 404) {
+                    setError(errMsg || 'Failed to fetch queries');
                 } else if (error.request) {
-                    toast.error('Network error', {
-                        description: 'No response from server. Please check your connection.',
-                    });
+                    setError('No response from server. Please check your connection.');
                 } else {
-                    toast.error('Unexpected error', {
-                        description: error.message,
-                    });
+                    setError('Something went wrong');
                 }
             } finally {
                 setIsLoading(false);
@@ -67,12 +68,25 @@ const useFetchQueries = (agentId: string) => {
         queries: data,
         isLoading,
         userHasSubscription,
+        error,
     };
 };
 
 export default function Page() {
     const { user } = useUser();
-    const { queries, isLoading, userHasSubscription } = useFetchQueries(user?.userMetadata.agentId as string);
+    const { queries, isLoading, userHasSubscription, error } = useFetchQueries(user?.userMetadata.agentId as string);
+
+    if (isLoading) {
+        return (
+            <div className="fixed top-0 left-0 flex justify-center items-center w-screen h-screen">
+                <Loader size="30" strokeWidth="2" />
+            </div>
+        );
+    }
+
+    if (error) {
+        return <NoDataFound content={error} />;
+    }
     return (
         <div className="flex items-center justify-between mx-4 md:mx-26 md:mt-12">
             <div className="w-full">
@@ -119,10 +133,10 @@ export default function Page() {
                     </Table>
 
                     {/* No Subcription */}
-                    {!isLoading && !userHasSubscription && <BuySubscription />}
+                    {!isLoading && userHasSubscription === false && <BuySubscription />}
 
                     {/* No query found component  (Subscription Buy) */}
-                    {!isLoading && userHasSubscription && queries.length === 0 && <NoDataFound />}
+                    {!isLoading && userHasSubscription === true && queries.length === 0 && <NoDataFound />}
                 </div>
             </div>
         </div>

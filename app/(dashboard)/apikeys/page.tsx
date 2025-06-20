@@ -25,11 +25,11 @@ interface ApiDataProp {
 
 const useFetchApiKeys = () => {
     const [apiKeys, setApiKeys] = useState<ApiDataProp[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
-            setIsLoading(true);
             try {
                 const response = await AxiosInstance.get('/api/v1/apikey', {
                     withCredentials: true,
@@ -43,18 +43,15 @@ const useFetchApiKeys = () => {
             } catch (err: unknown) {
                 const error = err as AxiosError;
 
-                if (error.response) {
-                    toast.error('Failed to fetch API keys', {
-                        description: (error.response.data as AxiosError)?.message || 'An error occurred',
-                    });
+                const statusCode = error.response?.status;
+                const errMsg = (error.response?.data as AxiosError).message as string;
+
+                if (error.response || statusCode === 404) {
+                    setError(errMsg || 'Failed to fetch query details');
                 } else if (error.request) {
-                    toast.error('Network error', {
-                        description: 'No response from server. Please check your connection.',
-                    });
+                    setError('No response from server. Please check your connection.');
                 } else {
-                    toast.error('Unexpected error', {
-                        description: error.message,
-                    });
+                    setError('Something went wrong');
                 }
             } finally {
                 setIsLoading(false);
@@ -64,11 +61,11 @@ const useFetchApiKeys = () => {
         fetchData();
     }, []);
 
-    return { apiKeys: apiKeys || [], setApiKeys, isLoading };
+    return { apiKeys: apiKeys || [], setApiKeys, isLoading, error };
 };
 
 export default function Page() {
-    const { apiKeys, setApiKeys, isLoading } = useFetchApiKeys();
+    const { apiKeys, setApiKeys, isLoading, error } = useFetchApiKeys();
 
     // Copy API Key
     const apiKeyRef = useRef<HTMLInputElement | null>(null);
@@ -156,6 +153,18 @@ export default function Page() {
         }
         setIsModalOpen(false);
     };
+
+    if (isLoading) {
+        return (
+            <div className="fixed top-0 left-0 flex justify-center items-center w-screen h-screen">
+                <Loader size="30" strokeWidth="2" />
+            </div>
+        );
+    }
+
+    if (error) {
+        return <NoDataFound content={error} />;
+    }
     return (
         <>
             <div className="flex items-center justify-between py-4 mx-4 md:mx-26 md:mt-12">
@@ -221,17 +230,7 @@ export default function Page() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {isLoading ? (
-                            <TableRow>
-                                <TableCell colSpan={5}>
-                                    <div className="flex justify-center items-center py-4">
-                                        <Loader size="30" strokeWidth="2" />
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ) : (
-                            /** Rendering all api-keys */
-                            apiKeys.length > 0 &&
+                        {apiKeys.length > 0 &&
                             apiKeys.map((item: ApiDataProp) => (
                                 <TableRow key={item.id} className="text-base hover:bg-transparent cursor-pointer">
                                     <TableCell className="font-semibold underline decoration-dashed text-ellipsis pr-8 py-4">
@@ -250,12 +249,11 @@ export default function Page() {
                                     </TableCell>
                                     <TableCell className="text-right py-4"></TableCell>
                                 </TableRow>
-                            ))
-                        )}
+                            ))}
                     </TableBody>
                 </Table>
                 {/* No API Key found component */}
-                {apiKeys.length < 1 && <NoDataFound />}
+                {!isLoading && apiKeys.length === 0 && <NoDataFound />}
             </div>
             {
                 /** Render Modal for create and edit API Key */

@@ -17,6 +17,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem } from '../ui/form';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
+import NoDataFound from '../NoDataFound';
 
 interface GeneralTabProps {
     basicInfo: {
@@ -34,10 +35,9 @@ interface GeneralTabProps {
 
 const useFetchSettingsGeneralTab = () => {
     const [data, setData] = useState<GeneralTabProps | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        setIsLoading(true);
         const fetchData = async () => {
             try {
                 const response = await AxiosInstance.get('/api/v1/settings/general', {
@@ -169,7 +169,7 @@ export default function SettingsGeneralTab() {
     }
 
     if ((!isLoading && !generalSettings) || Object.keys(generalSettings?.basicInfo || {}).length === 0) {
-        return <div className="text-center mt-8">To access these settings, please create an agent first.</div>;
+        return <NoDataFound content="To access these settings, please create an agent first." />;
     }
     return (
         <>

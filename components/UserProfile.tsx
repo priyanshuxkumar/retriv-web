@@ -27,16 +27,19 @@ import {
 } from 'lucide-react';
 import { User } from '@/context/user.context';
 import Link from 'next/link';
+import { getLocalStorage, setLocalStorage } from '@/lib/storage';
 
 interface UserProfileProps {
     user: User;
+    isLoading: boolean;
+    error: string | null;
     handleLogout: () => void;
 }
 
-export default function UserProfile({ user, handleLogout }: UserProfileProps) {
-    const { setTheme } = useTheme();
+export default function UserProfile({ user, isLoading, error, handleLogout }: UserProfileProps) {
+    const { setTheme, systemTheme } = useTheme();
 
-    if (!user) {
+    if (isLoading) {
         return (
             <div className="flex h-14 w-full items-center justify-center">
                 <div className="flex items-center gap-2">
@@ -47,19 +50,41 @@ export default function UserProfile({ user, handleLogout }: UserProfileProps) {
         );
     }
 
+    const handleThemeChange = (theme: string) => {
+        setTheme(theme);
+
+        // Change theme to local storage
+        if (typeof window !== 'undefined') {
+            const selectedTheme = theme === 'system' ? systemTheme : theme;
+
+            const isDarkThemeSet = getLocalStorage<boolean>('isDarkTheme');
+
+            if (isDarkThemeSet || selectedTheme) {
+                setLocalStorage('isDarkTheme', selectedTheme == 'dark');
+            }
+        }
+    };
     return (
         <div className="flex items-center justify-between gap-4 rounded-lg bg-muted p-3">
             <div className="flex items-center gap-3">
-                <Avatar className="h-10 w-10 rounded-md border">
-                    <AvatarImage src={user?.userMetadata.avatarUrl} />
-                    <AvatarFallback className="rounded-md bg-primary/10 text-primary">
-                        {user?.userMetadata.name[0].toUpperCase()}
-                    </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col">
-                    <span className="w-28 font-medium leading-none text-sm truncate">{user?.userMetadata.name}</span>
-                    <span className="text-xs text-muted-foreground">Free plan</span>
-                </div>
+                {error ? (
+                    error
+                ) : (
+                    <>
+                        <Avatar className="h-10 w-10 rounded-md border">
+                            <AvatarImage src={user?.userMetadata.avatarUrl} />
+                            <AvatarFallback className="rounded-md bg-primary/10 text-primary">
+                                {user?.userMetadata.name[0].toUpperCase()}
+                            </AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col">
+                            <span className="w-28 font-medium leading-none text-sm truncate">
+                                {user?.userMetadata.name}
+                            </span>
+                            <span className="text-xs text-muted-foreground">Free plan</span>
+                        </div>
+                    </>
+                )}
             </div>
 
             <div className="flex items-center gap-2">
@@ -109,7 +134,7 @@ export default function UserProfile({ user, handleLogout }: UserProfileProps) {
                                                     variant="ghost"
                                                     size="icon"
                                                     className="h-8 w-8 rounded-2xl"
-                                                    onClick={() => setTheme('light')}
+                                                    onClick={() => handleThemeChange('light')}
                                                 >
                                                     <Sun className="h-4 w-4" />
                                                     <span className="sr-only">Light theme</span>
@@ -124,7 +149,7 @@ export default function UserProfile({ user, handleLogout }: UserProfileProps) {
                                                     variant="ghost"
                                                     size="icon"
                                                     className="h-8 w-8 rounded-2xl"
-                                                    onClick={() => setTheme('dark')}
+                                                    onClick={() => handleThemeChange('dark')}
                                                 >
                                                     <Moon className="h-4 w-4" />
                                                     <span className="sr-only">Dark theme</span>
@@ -139,7 +164,7 @@ export default function UserProfile({ user, handleLogout }: UserProfileProps) {
                                                     variant="ghost"
                                                     size="icon"
                                                     className="h-8 w-8 rounded-2xl"
-                                                    onClick={() => setTheme('system')}
+                                                    onClick={() => handleThemeChange('system')}
                                                 >
                                                     <Laptop className="h-4 w-4" />
                                                     <span className="sr-only">System theme</span>

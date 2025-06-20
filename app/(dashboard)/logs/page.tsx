@@ -79,10 +79,7 @@ export default function Page() {
                                 <TableRow>
                                     <TableCell colSpan={5}>
                                         <div className="flex justify-center items-center py-4">
-                                            <Loader
-                                                size="30"
-                                                strokeWidth="2"
-                                            />
+                                            <Loader size="30" strokeWidth="2" />
                                         </div>
                                     </TableCell>
                                 </TableRow>

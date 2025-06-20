@@ -16,7 +16,7 @@ interface MobileMenuItemsProps {
 export default function MobileMenuItems({ onItemClick }: MobileMenuItemsProps) {
     const router = useRouter();
     const pathname = usePathname();
-    const { user } = useUser();
+    const { user, isLoading, error } = useUser();
     return (
         <div className="fixed bg-[#F9F6F0] dark:bg-black h-full w-full  z-40 overflow-hidden">
             <div className="my-6 mx-8">
@@ -31,7 +31,7 @@ export default function MobileMenuItems({ onItemClick }: MobileMenuItemsProps) {
                             href={item.link}
                             className={clsx(
                                 'flex h-10 items-center my-2 gap-2 rounded-md px-2 text-sm hover:bg-[#F5F5F7] dark:hover:bg-muted',
-                                pathname === item.link && 'bg-[#F5F5F7] dark:bg-muted font-bold',
+                                pathname.includes(item.link) && 'bg-[#F5F5F7] dark:bg-muted font-bold',
                             )}
                         >
                             <div className="text-sm opacity-80">{item?.icon}</div>
@@ -53,7 +53,12 @@ export default function MobileMenuItems({ onItemClick }: MobileMenuItemsProps) {
                         Account
                     </h3>
                 </div>
-                <UserProfile user={user as User} handleLogout={() => handleLogout(router)} />
+                <UserProfile
+                    user={user as User}
+                    isLoading={isLoading}
+                    error={error}
+                    handleLogout={() => handleLogout(router)}
+                />
             </div>
         </div>
     );

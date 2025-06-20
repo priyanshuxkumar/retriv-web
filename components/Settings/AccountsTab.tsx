@@ -21,7 +21,7 @@ import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 
 export default function SettingsAccountsTab() {
-    const { user } = useUser();
+    const { user, error } = useUser();
 
     const handleDeleteAgent = async () => {
         try {
@@ -59,7 +59,7 @@ export default function SettingsAccountsTab() {
                 <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                         <Label className="text-sm font-medium text-muted-foreground">Email</Label>
-                        <p className="font-medium">{user?.email}</p>
+                        <p className="font-medium">{error ? error : user?.email}</p>
                     </div>
                     <div className="space-y-2">
                         <Label className="text-sm font-medium text-muted-foreground">Account Type</Label>

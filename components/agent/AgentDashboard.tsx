@@ -7,9 +7,9 @@ import { AgentDetails } from './AgentDetails';
 import { ArrowRight, Bot, Globe, Sparkles } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import Loader from '../Loader';
 import { AxiosError } from 'axios';
-import { toast } from 'sonner';
+import { AgentSkeleton } from '../Skeleton/AgentSkeleton';
+import NoDataFound from '../NoDataFound';
 
 export interface AgentProps {
     id: string;
@@ -53,12 +53,12 @@ const bgColorMap: Record<string, string> = {
     'sky-100': 'bg-sky-100',
 };
 
-const useGetAgent = (): { agent: AgentProps | undefined; loading: boolean } => {
+const useGetAgent = (): { agent: AgentProps | undefined; isLoading: boolean; error: string | null } => {
     const [data, setData] = useState<AgentProps>();
-    const [loading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        setIsLoading(true);
         const fetchData = async () => {
             try {
                 const response = await AxiosInstance.get('/api/v1/agent', {
@@ -67,24 +67,19 @@ const useGetAgent = (): { agent: AgentProps | undefined; loading: boolean } => {
                         'Content-Type': 'application/json',
                     },
                 });
-                if (response.data.success == true) {
+                if (response.data.success === true) {
                     setData(response.data.data);
                 }
             } catch (err) {
                 const error = err as AxiosError;
+                const errMsg = (error.response?.data as AxiosError)?.message || 'Something went wrong';
 
                 if (error.response) {
-                    toast.error('Failed to fetch Agent data', {
-                        description: (error.response.data as AxiosError)?.message || 'An error occurred',
-                    });
+                    setError(errMsg || 'Failed to fetch Agent data');
                 } else if (error.request) {
-                    toast.error('Network error', {
-                        description: 'No response from server. Please check your connection.',
-                    });
+                    setError('No response from server. Please check your connection.');
                 } else {
-                    toast.error('Unexpected error', {
-                        description: error.message,
-                    });
+                    setError('Something went wrong');
                 }
             } finally {
                 setIsLoading(false);
@@ -94,12 +89,13 @@ const useGetAgent = (): { agent: AgentProps | undefined; loading: boolean } => {
     }, []);
     return {
         agent: data,
-        loading,
+        isLoading,
+        error,
     };
 };
 
 export default function AgentDashboard() {
-    const { agent, loading } = useGetAgent();
+    const { agent, isLoading, error } = useGetAgent();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [agentStatus, setAgentStatus] = useState<'Running' | 'Error' | 'Pending'>();
 
@@ -107,15 +103,15 @@ export default function AgentDashboard() {
         setAgentStatus(agent?.status);
     }, [agent?.status]);
 
-    if (loading || typeof agent === 'undefined') {
-        return (
-            <div className="h-screen flex items-center justify-center">
-                <Loader size="30" strokeWidth="2" />
-            </div>
-        );
+    if (isLoading) {
+        return <AgentSkeleton />;
     }
 
-    if (agent) {
+    if (error) {
+        return <NoDataFound content={error} />;
+    }
+
+    if (agent && !isLoading) {
         return <AgentDetails agent={agent as AgentProps} />;
     }
     return (

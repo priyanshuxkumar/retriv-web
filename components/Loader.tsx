@@ -15,7 +15,7 @@ export default function Loader({ strokeWidth = '2px', size = '1.5px' }: LoaderPr
     useEffect(() => {
         const isCurrentThemeDark = getLocalStorage('isDarkTheme');
 
-        setIsDarkTheme(isCurrentThemeDark === 'true');
+        setIsDarkTheme(isCurrentThemeDark === true);
     }, []);
 
     if (isDarkTheme === null) return null;

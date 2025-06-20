@@ -3,8 +3,7 @@
 import { getLocalStorage, setLocalStorage } from '@/lib/storage';
 import AxiosInstance from '@/utils/axiosInstance';
 import { AxiosError } from 'axios';
-import { createContext, useContext, useEffect, useState } from 'react';
-import { toast } from 'sonner';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 export interface User {
     id: number;
@@ -21,6 +20,8 @@ export interface User {
 interface UserContextType {
     user: User | null;
     isAuthenticated: boolean;
+    isLoading: boolean;
+    error: string | null;
 }
 
 interface UserProviderProps {
@@ -38,52 +39,52 @@ export const useUser = () => {
 };
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
     const [user, setUser] = useState<User | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
-    useEffect(() => {
-        (async () => {
-            try {
-                const response = await AxiosInstance.get(`/api/v1/user`, {
-                    withCredentials: true,
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-                if (response.data.success == true) {
-                    const userData = response.data.data;
-                    setUser(response.data.data);
-                    setIsAuthenticated(true);
+    const fetchUser = useCallback(async () => {
+        try {
+            const response = await AxiosInstance.get(`/api/v1/user`, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.data.success == true) {
+                setUser(response.data.data);
+                setIsAuthenticated(true);
 
-                    // Set data to local storage
-                    const isNameAlreadyExist = getLocalStorage('user_fullname');
-                    if (!isNameAlreadyExist && userData?.userMetadata.name) {
-                        setLocalStorage('user_fullname', userData.userMetadata.name);
-                    }
+                const { name, email } = user?.userMetadata || {};
 
-                    const isEmailAlreadyExist = getLocalStorage('user_email');
-                    if (!isEmailAlreadyExist && userData?.userMetadata.email) {
-                        setLocalStorage('user_email', userData.userMetadata.email);
-                    }
+                // Set data to local storage
+                if (name && !getLocalStorage('user_fullname')) {
+                    setLocalStorage('user_fullname', name);
                 }
-            } catch (err) {
-                const error = err as AxiosError;
-
-                if (error.response) {
-                    toast.error('Failed to fetch logged in user details', {
-                        description: (error.response.data as AxiosError)?.message || 'An error occurred',
-                    });
-                } else if (error.request) {
-                    toast.error('Network error', {
-                        description: 'No response from server. Please check your connection.',
-                    });
-                } else {
-                    toast.error('Unexpected error', {
-                        description: error.message,
-                    });
+                if (email && !getLocalStorage('user_email')) {
+                    setLocalStorage('user_email', email);
                 }
             }
-        })();
-    }, [user?.userMetadata.email, user?.userMetadata.name]);
-    return <UserContext.Provider value={{ user, isAuthenticated }}>{children}</UserContext.Provider>;
+        } catch (err) {
+            const error = err as AxiosError;
+
+            const errMsg = (error.response?.data as AxiosError).message as string;
+
+            if (error.response) {
+                setError(errMsg || 'Failed to fetch user details');
+            } else if (error.request) {
+                setError('No response from server. Please check your connection.');
+            } else {
+                setError('Something went wrong');
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    }, [user?.userMetadata]);
+
+    useEffect(() => {
+        fetchUser();
+    }, [fetchUser]);
+    return <UserContext.Provider value={{ user, isAuthenticated, isLoading, error }}>{children}</UserContext.Provider>;
 };

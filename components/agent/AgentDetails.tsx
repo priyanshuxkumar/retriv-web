@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { Globe, BarChart, Bot, Hammer, Clock9 } from 'lucide-react';
+import { Globe, BarChart, Bot, Hammer, Clock9, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { alegreya } from '../fonts/fonts';
 import { timeAgo } from '@/helper/time';
@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { docco, darcula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { oneLight, oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { getLocalStorage } from '@/lib/storage';
 
 interface IntegrationCodeProp {
@@ -22,9 +22,9 @@ interface IntegrationCodeProp {
 const nextjsCode = `<!-- Place this inside your layout.tsx -->
 <Script
   src='https://retriv.xyz/agent-widget.js'
-  data-agent-id='111223334445555'
-  data-api-key='rt_1234456789'
-  data-name='YourAgentName'
+  data-agent-id='111223334445555' // Agent Id
+  data-api-key='rt_1234456789' // API Key
+  data-name='YourAgentName' // Agent Name
   strategy='afterInteractive'
   async
 />`;
@@ -32,18 +32,18 @@ const nextjsCode = `<!-- Place this inside your layout.tsx -->
 const reactjsCode = `<!-- Place inside public/index.html -->
 <script
   src="https://retriv.xyz/agent-widget.js"
-  data-agent-id="111223334445555"
-  data-api-key="rt_1234456789"
-  data-name="YourAgentName"
+  data-agent-id="111223334445555" // Agent Id
+  data-api-key="rt_1234456789" // API Key
+  data-name="YourAgentName" // Agent Name
   async
 ></script>`;
 
 const javascriptCode = `<!-- Vanilla JS - Place before </body> tag -->
 <script
   src="https://retriv.xyz/agent-widget.js"
-  data-agent-id="111223334445555"
-  data-api-key="rt_1234456789"
-  data-name="YourAgentName"
+  data-agent-id="111223334445555" // Agent Id
+  data-api-key="rt_1234456789" // API Key
+  data-name="YourAgentName" // Agent Name
   async
 ></script>`;
 
@@ -66,12 +66,23 @@ export function AgentDetails({ agent }: { agent: AgentProps }) {
     const isCurrentThemeDark = getLocalStorage('isDarkTheme');
     const codeRef = useRef<HTMLDivElement | null>(null);
     const [copied, setCopied] = useState<number | null>(null);
+    const [agentIdCopied, setAgentIdCopied] = useState<boolean>(false);
 
     const handleCopyCode = (code: string, idx: number) => {
         if (codeRef.current) {
             navigator.clipboard.writeText(code).then(() => {
                 setCopied(idx);
             });
+        }
+    };
+
+    const handleCopyAgentId = async () => {
+        try {
+            await navigator.clipboard.writeText(agent.id);
+            setAgentIdCopied(true);
+            setTimeout(() => setAgentIdCopied(false), 2000);
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
         }
     };
     return (
@@ -201,7 +212,44 @@ export function AgentDetails({ agent }: { agent: AgentProps }) {
                 </TabsContent>
 
                 <TabsContent value="integration" className="pt-4">
-                    <Card className="bg-[#EEECE8] dark:bg-muted">
+                    <Card className="bg-[#EEECE8] dark:bg-transparent mb-5 shadow-sm">
+                        <CardHeader className="pb-3">
+                            <CardTitle className="font-semibold text-base text-gray-700 dark:text-gray-300">
+                                Your Agent ID
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                            <div className="flex items-center justify-between gap-3">
+                                <div className="flex-1 min-w-0">
+                                    <code className="text-sm font-mono bg-white/50 dark:bg-gray-800/50 px-3 py-2 rounded-md border border-gray-200/50 dark:border-gray-700/50 block truncate text-gray-800 dark:text-gray-200">
+                                        {agent.id}
+                                    </code>
+                                </div>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={handleCopyAgentId}
+                                    className="shrink-0 bg-white/70 dark:bg-black border-gray-200/50 dark:border-gray-700/50 hover:bg-white dark:hover:bg-gray-800"
+                                >
+                                    {agentIdCopied ? (
+                                        <>
+                                            <Check className="h-4 w-4 mr-1" />
+                                            Copied
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Copy className="h-4 w-4 mr-1" />
+                                            Copy
+                                        </>
+                                    )}
+                                </Button>
+                            </div>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 ml-1">
+                                Your Agent ID — Include this in the {'<script>'} tag to load your agent.
+                            </p>
+                        </CardContent>
+                    </Card>
+                    <Card className="bg-[#EEECE8] dark:bg-transparent">
                         <CardHeader>
                             <CardTitle>Website Integration</CardTitle>
                             <CardDescription>Add your agent to your website</CardDescription>
@@ -213,11 +261,11 @@ export function AgentDetails({ agent }: { agent: AgentProps }) {
                                     <div className="rounded-md pt-4">
                                         <div
                                             ref={codeRef}
-                                            className="bg-background rounded-xl font-mono text-sm overflow-x-auto"
+                                            className="bg-transparent rounded-xl font-mono text-sm overflow-x-auto"
                                         >
                                             <SyntaxHighlighter
                                                 language="javascript"
-                                                style={isCurrentThemeDark ? darcula : docco}
+                                                style={isCurrentThemeDark ? oneDark : oneLight}
                                                 customStyle={{
                                                     padding: '12px',
                                                     fontSize: '15px',
@@ -228,12 +276,23 @@ export function AgentDetails({ agent }: { agent: AgentProps }) {
                                                 {item.code}
                                             </SyntaxHighlighter>
                                         </div>
+
                                         <Button
-                                            onClick={() => handleCopyCode(item.code, idx)}
                                             variant="outline"
-                                            className="w-full mt-4"
+                                            onClick={() => handleCopyCode(item.code, idx)}
+                                            className="w-full shrink-0 bg-white/70 dark:bg-black border-gray-200/50 dark:border-gray-700/50 hover:bg-white dark:hover:bg-gray-800"
                                         >
-                                            {copied === idx ? 'Copied!' : 'Copy'}
+                                            {copied === idx ? (
+                                                <>
+                                                    <Check className="h-4 w-4 mr-1" />
+                                                    Copied
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Copy className="h-4 w-4 mr-1" />
+                                                    Copy
+                                                </>
+                                            )}
                                         </Button>
                                     </div>
                                 </div>

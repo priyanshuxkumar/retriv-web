@@ -11,7 +11,7 @@ export function ThemeWatcher() {
         if (typeof window !== 'undefined') {
             const selectedTheme = theme === 'system' ? systemTheme : theme;
             const isDarkThemeSet = getLocalStorage<boolean>('isDarkTheme');
-            if (isDarkThemeSet === null && selectedTheme) {
+            if (isDarkThemeSet || selectedTheme) {
                 setLocalStorage('isDarkTheme', selectedTheme === 'dark');
             }
         }
